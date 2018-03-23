@@ -1,0 +1,10 @@
+h1 Lists
+
+- lists.each do |list|
+    .list_link
+        a href="lists/#{list.id}"
+            = list.name
+    .has-below
+a href='/new' Create New List
+.has-below
+a href='/logout' Log Out

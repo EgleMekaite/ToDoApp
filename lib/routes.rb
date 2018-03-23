@@ -9,12 +9,12 @@ end
 get '/?' do
     user = User.first(id: session[:user_id])
     all_lists = List.association_join(:permissions).where(user_id: user.id)
-    haml :lists, locals: {lists: all_lists}
+    slim :lists, locals: {lists: all_lists}
 end
     
 get '/new/?' do
     # show create list page
-    haml :new_list
+    slim :new_list
 end
 
 post '/new/?' do
@@ -89,9 +89,9 @@ get '/signup/?' do
     # show signup form
     
     if session[:user_id].nil?
-        haml :signup
+        slim :signup
     else
-        haml :error, :locals => {:error => 'Please log out first'}
+        slim :error, :locals => {:error => 'Please log out first'}
     end
 end
     
@@ -107,9 +107,9 @@ get '/login/?' do
     # show a login page
     
     if session[:user_id].nil?
-        haml :login
+        slim :login
     else
-        haml :error, locals: {error: 'You are logged in'}
+        slim :error, locals: {error: 'You are logged in'}
     end
 end
     
@@ -118,7 +118,7 @@ post '/login/?' do
     md5sum = Digest::MD5.hexdigest params[:password]
     user = User.first(name: params[:name], password: md5sum)
     if user.nil?
-        haml :error, locals: {error: 'Invalid username or password'}
+        slim :error, locals: {error: 'Invalid username or password'}
     else
         session[:user_id] = user.id
         redirect '/'

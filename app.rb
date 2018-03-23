@@ -4,6 +4,7 @@ require 'yaml'
 require 'digest'
 require 'pry'
 require_relative 'lib/routes'
+require 'slim'
 
 class Todo < Sinatra::Application
     set :environment, :development
