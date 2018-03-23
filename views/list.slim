@@ -1,0 +1,25 @@
+css:
+  table, h2, a {
+    margin: 20px 0px 0px 25px;
+  }
+  table td,
+  table th {
+    border: 1px solid black;
+    padding: 4px;
+    text-align: center;
+  }
+h2= list.name
+.has-below
+a href='/edit/#{list.id}' Edit list
+table
+  thead
+    tr
+      th Item name
+      th Item description
+  tbody
+    -list_items.each do |item|
+      tr
+        td #{item[:name]}
+        td #{item[:description]}
+    end
+    

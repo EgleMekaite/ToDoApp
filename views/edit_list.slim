@@ -1,0 +1,27 @@
+css:
+  table, h2 {
+    margin: 20px 0px 0px 25px;
+  }
+  table td,
+  table th {
+    border: 1px solid black;
+    padding: 4px;
+    text-align: center;
+  }
+h2= list.name
+.has-below
+
+table
+  thead
+    tr
+      th Action
+      th Item name
+      th Item description
+  tbody
+    -list_items.each do |item|
+      tr
+        td
+          a href='' Edit / Delete?
+        td #{item[:name]}
+        td #{item[:description]}
+    end

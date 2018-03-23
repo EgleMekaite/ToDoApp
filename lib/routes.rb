@@ -11,6 +11,12 @@ get '/?' do
     all_lists = List.association_join(:permissions).where(user_id: user.id)
     slim :lists, locals: {lists: all_lists}
 end
+
+get '/lists/:list_id' do
+    list = List.first(id: params[:list_id])
+    list_items = list.items
+    slim :list, locals: {list_items: list_items, list: list }
+end
     
 get '/new/?' do
     # show create list page
@@ -24,9 +30,10 @@ post '/new/?' do
     redirect "/"
 end
     
-get '/edit/:id/?' do
+get '/edit/:list_id' do
     # check user permission and show the edit page
-    list = List.first(id: params[:id])
+    list = List.first(id: params[:list_id])
+    list_items = list.items
     can_edit = true
 
     if list.nil?
@@ -40,9 +47,9 @@ get '/edit/:id/?' do
     end
 
     if can_edit
-    haml :edit_list, locals: {list: list}
+    slim :edit_list, locals: {list: list, list_items: list_items}
     else
-    haml :error #:locals => {:error => 'Invalid permissions'}
+    slim :error, locals: {error: 'Invalid permissions'}
     end
 end
     
