@@ -53,11 +53,12 @@ get '/edit/:list_id' do
     end
 end
     
-post '/edit/?' do
+post '/edit/:list_id' do
     # update the list
     user = User.first(id: session[:user_id])
-    List.edit_list params[:id], params[:name], params[:items], user
-    redirect request.referer
+    list = List.first(id: params[:list_id])
+    list.edit_list params[:list_id], params[:name], params[:items], user
+    redirect '/'
 end
 
 get '/delete/:list_id' do

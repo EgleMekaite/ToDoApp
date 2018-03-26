@@ -5,6 +5,7 @@ Sequel.migration do
         String :name, :length => 32, :null => false
         column :shared_with, 'enum("private", "shared", "public")', :null => false, :default => 'private' 
         DateTime :created_at
+        DateTime :updated_at
         end
     end
 end

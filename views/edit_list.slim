@@ -1,27 +1,42 @@
-css:
-  table, h2 {
-    margin: 20px 0px 0px 25px;
-  }
-  table td,
-  table th {
-    border: 1px solid black;
-    padding: 4px;
-    text-align: center;
-  }
-h2= list.name
-.has-below
-
-table
-  thead
-    tr
-      th Action
-      th Item name
-      th Item description
-  tbody
-    -list_items.each do |item|
-      tr
-        td
-          a href='' Edit / Delete?
-        td #{item[:name]}
-        td #{item[:description]}
-    end
+.col-md-8.col-md-offset-2
+    .has-below
+    .panel.panel-primary
+        .panel-heading
+            h3.panel-title Edit List
+        .panel-body
+            form.form-horizontal name:="list" method="post" action=url("/edit/#{list[:id]}")
+                .form-group
+                    label.control-label.col-md-4 for="name" List name
+                    .col-md-8
+                        input.form-control type="text" name="name" value='#{list[:name]}'
+                hr
+                -list_items.each do |item|
+                    .form-group.item-group
+                        .col-md-8 style='display: none'
+                            textarea.form-control type='text' name='items[][id]' #{item[:id]} 
+                        .col-md-4
+                            input.form-control type="text" name="items[][name]" value='#{item[:name]}'
+                        .col-md-8
+                            textarea.form-control type="text" name="items[][description]" #{item[:description]}
+                end
+                    #items_list.form-group
+                        a href='javascript:void(0)' id='add-item' class='col-md-3' Add Item
+                hr
+                .form-group
+                    .col-md-2.col-md-offset-3
+                        button.btn.btn-sm.btn-primary type="submit"
+                            i.glyphicon.glyphicon-ok Submit changes
+  
+script type="text/template" id='item_template'
+    .form-group.item-group
+        .col-md-4
+            input.form-control type="text" name="items[][name]" placeholder="Item name"
+        .col-md-8
+            textarea.form-control type="text" name="items[][description]" placeholder="Item description"
+  
+  
+javascript:
+    $('#add-item').on('click', function(){
+        var template_text = $('#item_template').html()
+        $('#items_list').before(template_text);
+    });
