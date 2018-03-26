@@ -11,6 +11,7 @@ css:
 h2= list.name
 .has-below
 a href='/edit/#{list.id}' Edit list
+a href='/delete/#{list.id}' onclick = 'return confirm("are you sure you want to delete this list?");' Delete list
 table
   thead
     tr

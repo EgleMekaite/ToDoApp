@@ -46,6 +46,14 @@ class List < Sequel::Model
             end
         end
     end
+
+    def delete_list list_id, items
+        list = List.first(id: list_id)
+        permissions = list.permissions
+        items.each {|item| item.destroy }
+        permissions.each {|permission| permission.destroy }
+        list.destroy
+    end
 end
 
 class Item < Sequel::Model

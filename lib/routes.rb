@@ -59,6 +59,12 @@ post '/edit/?' do
     List.edit_list params[:id], params[:name], params[:items], user
     redirect request.referer
 end
+
+get '/delete/:list_id' do
+    list = List.first(id: params[:list_id])
+    list.delete_list list.id, list.items
+    redirect '/'
+end
     
 post '/permission/?' do
     # update permission
