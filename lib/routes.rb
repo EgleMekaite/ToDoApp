@@ -8,8 +8,8 @@ end
   
 get '/?' do
     user = User.first(id: session[:user_id])
-    all_lists = List.association_join(:permissions).where(user_id: user.id)
-    slim :lists, locals: {lists: all_lists}
+    @lists = List.association_join(:permissions).where(user_id: user.id)
+    slim :lists
 end
 
 get '/lists/:list_id' do
@@ -58,13 +58,19 @@ post '/edit/:list_id' do
     user = User.first(id: session[:user_id])
     list = List.first(id: params[:list_id])
     list.edit_list params[:list_id], params[:name], params[:items], user
-    redirect '/'
+    redirect "/lists/#{list[:id]}"
 end
 
 get '/delete/:list_id' do
     list = List.first(id: params[:list_id])
     list.delete_list list.id, list.items
     redirect '/'
+end
+
+get '/delete/item/:item_id' do
+    item = Item.first(id: params[:item_id])
+    item.destroy
+    redirect back
 end
     
 post '/permission/?' do
@@ -95,7 +101,7 @@ post '/permission/?' do
         end
         redirect request.referer
     else
-        haml :error, locals: {error: 'Invalid permissions'}
+        slim :error, locals: {error: 'Invalid permissions'}
     end
 end
     
@@ -110,11 +116,10 @@ get '/signup/?' do
 end
     
 post '/signup/?' do
-    
     md5sum = Digest::MD5.hexdigest params[:password]
     user = User.create(name: params[:name], password: md5sum, created_at: Time.now)
     session[:user_id] = user.id
-        redirect '/'
+    redirect '/'
 end
     
 get '/login/?' do

@@ -8,13 +8,14 @@
                 button.btn.btn-default type='button'
                     a href='/edit/#{list.id}' Edit list
                 button.btn.btn-default type='button'
-                    a href='/delete/#{list.id}' onclick = 'return confirm("are you sure you want to delete this list?");' Delete list
+                    a href='/delete/#{list.id}' onclick = 'return confirm("Are you sure you want to delete this list?");' Delete list
             .has-below
             table.table
                 thead
                     tr
                         th.col-md-4 Item name
                         th.col-md-8 Item description
+                        th
                 tbody
                     -list_items.each do |item|
                         tr

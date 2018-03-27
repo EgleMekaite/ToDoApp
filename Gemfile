@@ -5,3 +5,4 @@ gem 'sequel'
 gem 'mysql2' #For MySQL
 gem 'pry'
 gem 'slim'
+gem 'shotgun'
