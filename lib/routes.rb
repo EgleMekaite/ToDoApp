@@ -1,4 +1,5 @@
 require 'sinatra'
+require 'pry'
 
 before do
     if !['login', 'signup'].include? (request.path_info.split('/')[1]) and session[:user_id].nil?
@@ -14,7 +15,7 @@ end
 
 get '/lists/:list_id' do
     list = List.first(id: params[:list_id])
-    list_items = list.items
+    list_items = list.items_dataset.order(Sequel.desc(:starred))
     slim :list, locals: {list_items: list_items, list: list }
 end
     
@@ -57,7 +58,7 @@ post '/edit/:list_id' do
     # update the list
     user = User.first(id: session[:user_id])
     list = List.first(id: params[:list_id])
-    list.edit_list params[:list_id], params[:name], params[:items], user
+    list.edit_list params[:list_id], params[:name], params[:items], params[:starred], user
     redirect "/lists/#{list[:id]}"
 end
 

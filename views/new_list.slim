@@ -7,14 +7,17 @@
             form.form-horizontal name:="list" method="post" action=url("/new")
                 .form-group
                     label.control-label.col-md-4 for="name" List Name
-                    .col-md-8
+                    .col-md-6
                         input.form-control type="text" name="name"
                 hr
                 .form-group.item-group
                     .col-md-4
                         input.form-control type="text" name="items[][name]" placeholder="Item name"
-                    .col-md-8
+                    .col-md-6
                         textarea.form-control type="text" name="items[][description]" placeholder="Item description"
+                    .col-md-2
+                        input.priority type='checkbox' aria-label='...' name='items[][starred]'
+                            i.glyphicon.glyphicon-star-empty Priority?
                 #items_list.form-group
                     a href='javascript:void(0)' id='add-item' class='col-md-3' Add Item
                 hr
@@ -27,8 +30,11 @@ script type="text/template" id='item_template'
     .form-group.item-group
         .col-md-4
             input.form-control type="text" name="items[][name]" placeholder="Item name"
-        .col-md-8
+        .col-md-6
             textarea.form-control type="text" name="items[][description]" placeholder="Item description"
+        .col-md-2
+            input.priority type='checkbox' aria-label='...' name='items[][starred]'
+                i.glyphicon.glyphicon-star-empty Priority?
   
   
 javascript:

@@ -14,11 +14,22 @@
                 thead
                     tr
                         th.col-md-4 Item name
-                        th.col-md-8 Item description
-                        th
+                        th.col-md-6 Item description
+                        th.col-md-2
                 tbody
                     -list_items.each do |item|
                         tr
                             td.col-md-4 #{item[:name]}
-                            td.col-md-8 #{item[:description]}
+                            td.col-md-6 #{item[:description]}
+                            td.col-md-2 data-name='#{item[:starred]}' id='item-#{item[:id]}'
+                                i.glyphicon
                     end
+
+javascript:
+    $('[data-name]').each(function(){
+        if ($(this).attr('data-name') == 'true') {
+        item_id = $(this).attr('id');
+        $('#' + item_id + ' > i').addClass('glyphicon-star');
+        } 
+    });
+    
