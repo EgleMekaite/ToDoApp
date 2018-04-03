@@ -1,4 +1,4 @@
-.col-md-8.col-md-offset-2
+.col-md-10.col-md-offset-1
     .has-below
     .panel.panel-primary
         .panel-heading
@@ -9,27 +9,35 @@
                     a href='/edit/#{list.id}' Edit list
                 button.btn.btn-default type='button'
                     a href='/delete/#{list.id}' onclick = 'return confirm("Are you sure you want to delete this list?");' Delete list
+                button.btn.btn-default type='button' 
+                    a href='/comments' Comment this list
             .has-below
             table.table
                 thead
                     tr
-                        th.col-md-4 Item name
+                        th.col-md-2 Item name
                         th.col-md-6 Item description
-                        th.col-md-2
+                        th.col-md-2 Priority
+                        th.col-md-2 Due Date
                 tbody
                     -list_items.each do |item|
-                        tr
-                            td.col-md-4 #{item[:name]}
+                        tr id='row-#{item[:id]}'
+                            td.col-md-2 #{item[:name]}
                             td.col-md-6 #{item[:description]}
                             td.col-md-2 data-name='#{item[:starred]}' id='item-#{item[:id]}'
                                 i.glyphicon
+                            td.col-md-2 #{item.due_date&.strftime("%Y-%m-%d")}
                     end
+            .has-below
+            
+            a View  comments of this list:
+
+    
+css:
+    .starred {
+        background-color: #F0F8FF;
+    }
 
 javascript:
-    $('[data-name]').each(function(){
-        if ($(this).attr('data-name') == 'true') {
-        item_id = $(this).attr('id');
-        $('#' + item_id + ' > i').addClass('glyphicon-star');
-        } 
-    });
-    
+    $('#create_new a').show();  
+    $('#logout').show(); 

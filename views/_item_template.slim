@@ -1,0 +1,14 @@
+.form-group.item-group.template
+    .col-md-2
+        input.form-control type="text" name="items[][name]" placeholder="Item name"
+    .col-md-4
+        textarea.form-control type="text" name="items[][description]" placeholder="Item description"
+    .col-md-1
+        input.priority type='checkbox' aria-label='...' name='items[][starred]' 
+            i.glyphicon.glyphicon-star-empty Priority?
+    .col-md-3
+        input.form-control type='datetime-local' autocomplete='on' name='items[][due_date]' value='items[][due_date]'
+    .col-md-2
+        button.btn.btn-default.delete-unsaved type='button'
+            i.glyphicon.glyphicon-remove
+

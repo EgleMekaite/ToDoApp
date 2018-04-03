@@ -1,4 +1,4 @@
-.col-md-9.col-md-offset-2
+.col-md-10.col-md-offset-1
     .has-below
     .panel.panel-primary
         .panel-heading
@@ -11,18 +11,26 @@
                         input.form-control type="text" name="name" value='#{list[:name]}'
                 hr
                 -list_items.each do |item|
+                    
                     .form-group.item-group
                         .col-md-2 style='display: none'
                             textarea.form-control type='text' name='items[][id]' #{item[:id]} 
                         .col-md-2
                             input.form-control type="text" name="items[][name]" value='#{item[:name]}'
-                        .col-md-6
-                            textarea.form-control type="text" name="items[][description]" #{item[:description]}
+                        .col-md-4
+                            textarea.form-control type="text" name="items[][description]" #{item[:description]}  
+                        .col-md-1
+                            - if item.starred == true
+                                input.priority type='checkbox' aria-label='...' name='items[][starred]' checked=true
+                                    i.glyphicon.glyphicon-star-empty Priority?
+                            - else
+                                input.priority type='checkbox' aria-label='...' name='items[][starred]' checked=false
+                                    i.glyphicon.glyphicon-star-empty Priority?
+                            end
+                        .col-md-3
+                            input.form-control type='datetime-local' autocomplete='on' name='items[][due_date]' value='#{item.due_date&.strftime("%Y-%m-%dT%H:%M")}'
                         .col-md-2
-                            input.priority type='checkbox' aria-label='...' name='items[][starred]' checked='#{item[:starred]}'
-                                i.glyphicon.glyphicon-star-empty Priority?
-                        .col-md-2
-                            button.btn.btn-default.delete id="item-#{item[:id]}" type='button' onclick = 'return confirm("Are you sure you want to delete this item?");' Delete item
+                            button.btn.btn-default.delete id="item-#{item[:id]}" type='button' Delete item
                 end
                     #items_list.form-group
                         a href='javascript:void(0)' id='add-item' class='col-md-3' Add Item
@@ -33,43 +41,7 @@
                             i.glyphicon.glyphicon-ok Submit changes
   
 script type="text/template" id='item_template'
-    .form-group.item-group.template
-        .col-md-2
-            input.form-control type="text" name="items[][name]" placeholder="Item name"
-        .col-md-6
-            textarea.form-control type="text" name="items[][description]" placeholder="Item description"
-        .col-md-2
-            input.priority type='checkbox' aria-label='...' name='items[][starred]' checked='items[][starred]'
-                i.glyphicon.glyphicon-star-empty Priority?
-        .col-md-2
-            button.btn.btn-default.delete-unsaved type='button' onclick='delete_unsaved()'
-                i.glyphicon.glyphicon-remove
+    == slim :'/_item_template'
   
-javascript:
-    var id_num = 1
-    $('#add-item').on('click', function(){
-        var template_text = $('#item_template').html();
-        $('#items_list').before(template_text);
-        $('.template').removeClass('template').attr('id', 'new-' + id_num);
-        $('.delete-unsaved').removeClass('delete-unsaved').attr('data-identifyer', 'delete_unsaved-' + id_num);
-        id_num++;
-    });
 
-    $('.delete').on('click', function(){
-        var item_id = $(this).attr('id').split('-')[1];
-        window.location.replace('/delete/item/' + item_id + '');
-    });
-/
-    $('.priority').each(function(){
-        if ($(this).attr('value') == 'false'){
-            $(this).prop('checked', false);
-        } else {
-            $(this).prop('checked', true);
-        }
-    });
-
-    function delete_unsaved(){
-        var button_id = $('[data-identifyer]').attr('data-identifyer').split('-')[1];
-        $('#new-'+ button_id).remove();
-    }
-    
+ 

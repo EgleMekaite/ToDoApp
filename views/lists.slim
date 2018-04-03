@@ -1,20 +1,16 @@
 .col-md-8.col-md-offset-2
+    .has-below 
+    h3 Your Lists
     .has-below
-    .panel.panel-primary
-        .panel-heading
-            h3.panel-title Lists
-        .panel-body
-            .btn-group role='group' aria-label='...'
-                button.btn.btn-default type='button'
-                    a href='/new' Create New List
-                button.btn.btn-default type='button'
-                    a href='/logout' Log Out
-            .has-below
-            ul.list-group
-                - @lists.each do |list|
-                    li.list-group-item
-                        h5
-                          a href="lists/#{list.id}"
-                            = list.name
-                end
-                
+    ul.list-group
+        - @lists.each do |list|
+            li.list-group-item
+                h5
+                  a href="lists/#{list.id}"
+                    = list.name
+        end
+
+javascript:
+    $('#create_new a').show();  
+    $('#logout').show(); 
+            

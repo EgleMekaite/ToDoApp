@@ -28,7 +28,7 @@ post '/new/?' do
     # create a list
     user = User.first(id: session[:user_id])
     list = List.new_list params[:name], params[:items], user
-    redirect "/"
+    redirect "/lists/#{list.id}"
 end
     
 get '/edit/:list_id' do
@@ -36,7 +36,6 @@ get '/edit/:list_id' do
     list = List.first(id: params[:list_id])
     list_items = list.items
     can_edit = true
-
     if list.nil?
         can_edit = false
     elsif list.shared_with == 'public'
@@ -59,6 +58,7 @@ post '/edit/:list_id' do
     user = User.first(id: session[:user_id])
     list = List.first(id: params[:list_id])
     list.edit_list params[:list_id], params[:name], params[:items], params[:starred], user
+    binding.pry
     redirect "/lists/#{list[:id]}"
 end
 

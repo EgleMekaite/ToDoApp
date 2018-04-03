@@ -4,6 +4,7 @@ html
     title ToDo
     script src="/js/jquery-3.3.1.min.js"
     script src="/js/bootstrap.min.js"
+    script src='/js/main.js'
     link rel="stylesheet" href="/css/bootstrap.min.css"
     link rel="stylesheet" href="/css/bootstrap-theme.min.css"
 
@@ -26,11 +27,20 @@ html
                     span.icon-bar
                   a.navbar-brand href=url('/')
                     i.glyphicon.glyphicon-home
-                    Home
+                .collapse.navbar-collapse 
+                  ul.nav.navbar-nav.navbar-left id='create_new'
+                    li 
+                      a href='/new' style='display: none' Create New List
+                  a.btn.btn-default.navbar-btn.navbar-right href='/logout' type='button' id='logout' style='margin-right: 10px; display: none'
+                      i.glyphicon.glyphicon-log-out
+                      span Log Out
 
           .has-below
           .has-below
           .has-below
 
+          /#flash.error
+            a.close data-dismiss='alert' &#215;
+            flash[:error]
         .row
           ==yield

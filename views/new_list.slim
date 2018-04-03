@@ -1,4 +1,4 @@
-.col-md-8.col-md-offset-2
+.col-md-10.col-md-offset-1
     .has-below
     .panel.panel-primary
         .panel-heading
@@ -6,18 +6,10 @@
         .panel-body
             form.form-horizontal name:="list" method="post" action=url("/new")
                 .form-group
-                    label.control-label.col-md-4 for="name" List Name
+                    label.control-label.col-md-2 for="name" List Name
                     .col-md-6
                         input.form-control type="text" name="name"
                 hr
-                .form-group.item-group
-                    .col-md-4
-                        input.form-control type="text" name="items[][name]" placeholder="Item name"
-                    .col-md-6
-                        textarea.form-control type="text" name="items[][description]" placeholder="Item description"
-                    .col-md-2
-                        input.priority type='checkbox' aria-label='...' name='items[][starred]'
-                            i.glyphicon.glyphicon-star-empty Priority?
                 #items_list.form-group
                     a href='javascript:void(0)' id='add-item' class='col-md-3' Add Item
                 hr
@@ -27,18 +19,7 @@
                             i.glyphicon.glyphicon-ok Create
   
 script type="text/template" id='item_template'
-    .form-group.item-group
-        .col-md-4
-            input.form-control type="text" name="items[][name]" placeholder="Item name"
-        .col-md-6
-            textarea.form-control type="text" name="items[][description]" placeholder="Item description"
-        .col-md-2
-            input.priority type='checkbox' aria-label='...' name='items[][starred]'
-                i.glyphicon.glyphicon-star-empty Priority?
-  
-  
+    == slim :'/_item_template'
+
 javascript:
-    $('#add-item').on('click', function(){
-        var template_text = $('#item_template').html()
-        $('#items_list').before(template_text);
-    });
+    $('#logout').show(); 
