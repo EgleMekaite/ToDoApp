@@ -2,7 +2,7 @@
     .has-below
     .panel.panel-primary
         .panel-heading
-            h3.panel-title Create List
+            h3.panel-title style='margin-top: 6px;' Create List
             a.btn.btn-primary.back href='/' type='button'
                 span Back to Lists
                 i.glyphicon.glyphicon-chevron-right
@@ -19,7 +19,8 @@
                 .form-group
                     .col-md-2.col-md-offset-3
                         button.btn.btn-sm.btn-primary type="submit"
-                            i.glyphicon.glyphicon-ok Create
+                            i.glyphicon.glyphicon-ok 
+                            span  Create
   
 script type="text/template" id='item_template'
     == slim :'/_item_template'
