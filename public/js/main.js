@@ -1,4 +1,10 @@
 $(document).ready(function(){
+    $.fn.extend({
+        toggleText: function(a, b){
+            return this.text(this.text() == b ? a : b);
+        }
+    });
+    
     var id_num = 1;
     $('#add-item').on('click', function(){
         var template_text = $('#item_template').html();
@@ -27,4 +33,21 @@ $(document).ready(function(){
         var button_id = $(this).attr('data-identifyer').split('-')[1];
         $('#new-'+ button_id).remove();
     });
+
+    $(document).on('click', '#view_comments', function(){
+        $('ul.comments > li').toggle();
+        $('#view_comments').toggleText('View comments of this list:', 'Hide comments');
+        $('#num_li').toggleText('', ' (' + $('ul.comments > li').length + ')');
+    });
+
+    $('.delete-comment').on('click', function(){
+        var comment_id = $(this).attr('id').split('-')[1];
+        window.location.replace('/delete/comment/' + comment_id + '');
+    });
+
+    var link = $('#view_comments');
+    if($('ul.comments li').length == 0){
+        link.text('This list has no comments');
+    }
+
 });

@@ -3,6 +3,9 @@
     .panel.panel-primary
         .panel-heading
             h3.panel-title Create List
+            a.btn.btn-primary.back href='/' type='button'
+                span Back to Lists
+                i.glyphicon.glyphicon-chevron-right
         .panel-body
             form.form-horizontal name:="list" method="post" action=url("/new")
                 .form-group
@@ -20,6 +23,12 @@
   
 script type="text/template" id='item_template'
     == slim :'/_item_template'
+
+css:
+    .panel-heading{
+        display: flex;
+        justify-content: space-between;
+    }
 
 javascript:
     $('#logout').show(); 

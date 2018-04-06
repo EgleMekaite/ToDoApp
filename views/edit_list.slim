@@ -3,6 +3,9 @@
     .panel.panel-primary
         .panel-heading
             h3.panel-title Edit List
+            a.btn.btn-primary.back href='/' type='button'
+                span Back to Lists
+                i.glyphicon.glyphicon-chevron-right
         .panel-body
             form.form-horizontal name:="list" method="post" action=url("/edit/#{list[:id]}")
                 .form-group
@@ -27,10 +30,11 @@
                                 input.priority type='checkbox' aria-label='...' name='items[][starred]' checked=false
                                     i.glyphicon.glyphicon-star-empty Priority?
                             end
-                        .col-md-3
-                            input.form-control type='datetime-local' autocomplete='on' name='items[][due_date]' value='#{item.due_date&.strftime("%Y-%m-%dT%H:%M")}'
-                        .col-md-2
-                            button.btn.btn-default.delete id="item-#{item[:id]}" type='button' Delete item
+                        .col-md-4
+                            input.form-control type='datetime-local' autocomplete='on' name='items[][due_date]' min='#{@min_date}' value='#{item.due_date&.strftime("%Y-%m-%dT%H:%M")}'
+                        .col-md-1
+                            button.btn.btn-default.delete id="item-#{item[:id]}" type='button'
+                                i.glyphicon.glyphicon-remove
                 end
                     #items_list.form-group
                         a href='javascript:void(0)' id='add-item' class='col-md-3' Add Item
@@ -43,5 +47,13 @@
 script type="text/template" id='item_template'
     == slim :'/_item_template'
   
+css:
+    .panel-heading{
+        display: flex;
+        justify-content: space-between;
+    }
 
+javascript:
+    $('#create_new a').show();  
+    $('#logout').show(); 
  

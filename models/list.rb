@@ -11,7 +11,6 @@ class List < Sequel::Model
 
     def self.new_list name, items, user
         list = List.create(name: name, created_at: Time.now)
-        @time_now = Time.now
         items.each do |item|
             if item[:starred].nil?
                 checked = 0
@@ -38,7 +37,7 @@ class List < Sequel::Model
         #list.updated_at = Time.now
         list.name = name
         list.save
-        
+    
         items.each do |item|
             if item[:starred].nil?
                 checked = 0
@@ -56,17 +55,27 @@ class List < Sequel::Model
                 i.starred = checked
                 i.due_date = item[:due_date]
                 i.updated_at = Time.now
-                binding.pry
                 i.save
             end 
         end
+        
+    end
+
+    def add_comment list, user, comments
+
+        comments.each do |comment|
+            comment = Comment.create(user_id: user.id, list_id: list.id, text: comment[:text], creation_date: Time.now, creation_time: Time.now)
+        end
+        list.save
     end
 
     def delete_list list_id, items
         list = List.first(id: list_id)
         permissions = list.permissions
+        comments = list.comments
         items.each(&:destroy)
         permissions.each(&:destroy)
+        comments.each(&:destroy)
         list.destroy
     end
 end
@@ -76,10 +85,4 @@ class Item < Sequel::Model
 
     many_to_one :user
     many_to_one :list
-
-    def validate
-        super
-        # errors.add(:due_date, 'cannot be in the past') if Date.parse(due_date.to_s) < Date.today
-        #flash[:error] = 'Due date cannot be in the past' if Date.parse(due_date.to_s) < Date.today
-    end
 end

@@ -4,13 +4,22 @@
         .panel-heading
             h3.panel-title= list.name
         .panel-body
-            .btn-group role='group' aria-label='...'
-                button.btn.btn-default type='button'
-                    a href='/edit/#{list.id}' Edit list
-                button.btn.btn-default type='button'
-                    a href='/delete/#{list.id}' onclick = 'return confirm("Are you sure you want to delete this list?");' Delete list
-                button.btn.btn-default type='button' 
-                    a href='/comments' Comment this list
+            #action-buttons
+                .btn-group.navbar-nav.navbar-left role='group' aria-label='...'
+                    a.btn.btn-default type='button' href='/edit/#{list.id}' Edit list
+                    a.btn.btn-default type='button' href='/delete/#{list.id}' onclick = 'return confirm("Are you sure you want to delete this list?");' Delete list
+                    button.btn.btn-default type='button'data-toggle='collapse' data-target='#collapse-#{list.id}' Add Comment
+                a.btn.btn-primary.navbar-righ href='/' type='button'
+                    span Back to Lists
+                    i.glyphicon.glyphicon-chevron-right
+            .has-below
+            .collapse.col-md-10 id='collapse-#{list.id}'
+                form.form-horizontal name:="comment" method="post" action=url("/new_comment/#{list[:id]}")
+                    .form-group
+                        .col-md-10.input-group
+                            input.form-control type='text' name="comments[][text]"
+                            span.input-group-btn
+                                button.btn.btn-default type='submit' Submit
             .has-below
             table.table
                 thead
@@ -30,14 +39,21 @@
                     end
             .has-below
             
-            a View  comments of this list:
+            a id='view_comments' View comments of this list
+            span id='num_li' 
+            == slim :'/_comment_view'
 
     
 css:
     .starred {
         background-color: #F0F8FF;
     }
+    #action-buttons {
+        display: flex;
+        justify-content: space-between;
+    }
 
 javascript:
     $('#create_new a').show();  
     $('#logout').show(); 
+    $('#num_li').text(' (' + $('ul.comments > li').length + ')');
