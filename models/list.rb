@@ -9,8 +9,13 @@ class List < Sequel::Model
 
     attr_writer :item
 
-    def self.new_list name, items, user
-        list = List.create(name: name, created_at: Time.now)
+    def before_save
+        self.updated_at = Time.now
+        self.created_at ||= updated_at
+    end
+
+    def self.new_list(name, items, user)
+        list = List.create(name: name)
         items.each do |item|
             if item[:starred].nil?
                 checked = 0
@@ -22,29 +27,25 @@ class List < Sequel::Model
         end
         Permission.create(list: list, user: user, permission_level: 'read_write', created_at: Time.now,
         updated_at: Time.now)
-        list
+        list.save
     end
 
     def validate
         super
+        errors.add(:items, 'must include at least one item') if !items || items.nil?
         errors.add(:name, 'cannot be blank') if !name || name.empty?
-        #errors.add(:name, 'already taken') if name && new? && List[:name=>name]
         errors.add(:name, 'not a valid name') unless name =~ /\A[A-Za-z]/
     end
 
     def edit_list id, name, items, starred, user
         list = List.first(id: id)
-        #list.updated_at = Time.now
         list.name = name
-        list.save
-    
         items.each do |item|
             if item[:starred].nil?
                 checked = 0
             else
                 checked = 1
             end
-            
             i = Item.first(id: item[:id])
             if i.nil?
                 Item.create(name: item[:name], description: item[:description], starred: checked, due_date: item[:due_date], list: list, user: user,
@@ -58,13 +59,18 @@ class List < Sequel::Model
                 i.save
             end 
         end
-        
+        if list.valid?
+            list.save
+        end
     end
 
     def add_comment list, user, comments
 
         comments.each do |comment|
-            comment = Comment.create(user_id: user.id, list_id: list.id, text: comment[:text], creation_date: Time.now, creation_time: Time.now)
+            comm = Comment.create(user_id: user.id, list_id: list.id, text: comment[:text])
+            if comm.valid?
+                comm.save
+            end
         end
         list.save
     end
@@ -80,9 +86,4 @@ class List < Sequel::Model
     end
 end
 
-class Item < Sequel::Model
-    set_primary_key :id
 
-    many_to_one :user
-    many_to_one :list
-end

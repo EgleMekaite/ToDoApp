@@ -39,7 +39,7 @@
                     end
             .has-below
             
-            a id='view_comments' View comments of this list
+            a id='view_comments'
             span id='num_li' 
             == slim :'/_comment_view'
 
@@ -56,4 +56,18 @@ css:
 javascript:
     $('#create_new a').show();  
     $('#logout').show(); 
-    $('#num_li').text(' (' + $('ul.comments > li').length + ')');
+    var link = $('#view_comments');
+    if($('ul.comments li').length == 0){
+        link.text('This list has no comments');
+        link.off();
+        $('#num_li').text('');
+    }
+    else {
+        link.text('View comments of this list');
+        $('#num_li').text(' (' + $('ul.comments > li').length + ')');
+        $(document).on('click', '#view_comments' ,function(){
+            link.toggleText('View comments of this list', 'Hide comments');
+            $('ul.comments > li').toggle();
+            $('#num_li').toggleText('', ' (' + $('ul.comments > li').length + ')');
+        });
+    }

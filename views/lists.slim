@@ -2,7 +2,7 @@
     .has-below 
     h3 Your Lists
     .has-below
-    ul.list-group
+    ul.list-group class='lists'
         - @lists.each do |list|
             li.list-group-item
                 h5
@@ -13,4 +13,6 @@
 javascript:
     $('#create_new a').show();  
     $('#logout').show(); 
-            
+    if ($('ul.lists > li').length == 0){
+        $('ul.lists').append('<li class="list-group-item">You have no lists</li>');
+    }

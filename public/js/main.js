@@ -34,20 +34,9 @@ $(document).ready(function(){
         $('#new-'+ button_id).remove();
     });
 
-    $(document).on('click', '#view_comments', function(){
-        $('ul.comments > li').toggle();
-        $('#view_comments').toggleText('View comments of this list:', 'Hide comments');
-        $('#num_li').toggleText('', ' (' + $('ul.comments > li').length + ')');
-    });
-
     $('.delete-comment').on('click', function(){
         var comment_id = $(this).attr('id').split('-')[1];
         window.location.replace('/delete/comment/' + comment_id + '');
     });
-
-    var link = $('#view_comments');
-    if($('ul.comments li').length == 0){
-        link.text('This list has no comments');
-    }
 
 });
