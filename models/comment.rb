@@ -6,7 +6,7 @@ class Comment < Sequel::Model
 
     def validate
         super
-        errors.add(:text, 'must contain a certain text') if !text || text.empty?
+        errors.add(:text, 'A comment must contain text') if !text || text.empty?
     end
 
     def before_save

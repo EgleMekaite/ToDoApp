@@ -20,7 +20,7 @@
                             textarea.form-control type='text' name='items[][id]' #{item[:id]} 
                         .col-md-2
                             input.form-control type="text" name="items[][name]" value='#{item[:name]}'
-                        .col-md-4
+                        .col-md-5
                             textarea.form-control type="text" name="items[][description]" #{item[:description]}  
                         .col-md-1
                             - if item.starred == true
@@ -30,8 +30,8 @@
                                 input.priority type='checkbox' aria-label='...' name='items[][starred]' checked=false
                                     i.glyphicon.glyphicon-star-empty Priority?
                             end
-                        .col-md-4
-                            input.form-control type='datetime-local' autocomplete='on' name='items[][due_date]' min='#{@min_date}' value='#{item.due_date&.strftime("%Y-%m-%dT%H:%M")}'
+                        .col-md-3
+                            input.form-control type='date' autocomplete='on' name='items[][due_date]' min='#{@min_date}' value='#{item.due_date&.strftime("%Y-%m-%d")}'
                         .col-md-1
                             button.btn.btn-default.delete id="item-#{item[:id]}" type='button'
                                 i.glyphicon.glyphicon-remove
@@ -57,4 +57,5 @@ css:
 javascript:
     $('#create_new a').show();  
     $('#logout').show(); 
+    $('#welcome_message').show();
  

@@ -28,11 +28,16 @@ html
                   a.navbar-brand href=url('/')
                     i.glyphicon.glyphicon-home
                 .collapse.navbar-collapse 
+                  ul.nav.navbar-nav.navbar-left id='welcome_message' style='display: none;'
+                    - if !@user.nil?
+                      li.nav-item
+                        a
+                          span Logged In: #{@user.name}
                   ul.nav.navbar-nav.navbar-left id='create_new'
                     li 
                       a href='/new' style='display: none'
                         i.glyphicon.glyphicon-plus-sign
-                        span  Create New List
+                        span  Create a New List
                   a.btn.btn-default.navbar-btn.navbar-right href='/logout' type='button' id='logout' style='margin-right: 10px; display: none'
                       i.glyphicon.glyphicon-log-out
                       span  Log Out

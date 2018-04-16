@@ -13,19 +13,24 @@
                     span Back to Lists
                     i.glyphicon.glyphicon-chevron-right
             .has-below
-            .collapse.col-md-10 id='collapse-#{list.id}'
+            - comment_errors = @new_comment.errors.on(:text) || []
+            .has-error
+                .help-block= comment_errors.any? ? comment_errors.join : ''
+            .collapse.col-md-10 id='collapse-#{list.id}' class=(comment_errors.any? ? 'has-error' : '')
                 form.form-horizontal name:="comment" method="post" action=url("/new_comment/#{list[:id]}")
                     .form-group
                         .col-md-10.input-group
                             input.form-control type='text' name="comments[][text]"
                             span.input-group-btn
                                 button.btn.btn-default type='submit' Submit
+                
+                         
             .has-below
             table.table
                 thead
                     tr
                         th.col-md-2 Item name
-                        th.col-md-6 Item description
+                        th.col-md-6 Item descrip tion
                         th.col-md-2 Priority
                         th.col-md-2 Due Date
                 tbody
@@ -56,6 +61,7 @@ css:
 javascript:
     $('#create_new a').show();  
     $('#logout').show(); 
+    $('#welcome_message').show();
     var link = $('#view_comments');
     if($('ul.comments li').length == 0){
         link.text('This list has no comments');

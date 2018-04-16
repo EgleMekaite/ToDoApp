@@ -1,4 +1,4 @@
-.col-md-4.col-md-offset-4
+.col-md-6.col-md-offset-3
     .has-below
     .panel.panel-primary
         .panel-heading
@@ -8,11 +8,17 @@
                 .form-group
                     label.control-label.col-md-3 for="name"  Username
                     .col-md-8
-                        input.form-control type="text" name="name" 
+                      - name_errors = @new_user.errors.on(:name) || []
+                      div class=(name_errors.any? ? 'has-error' : '')
+                        input.form-control type="text" name="name" value=@new_user.name
+                        .help-block= name_errors.any? ? name_errors.join(', ') : 'should be at least 4 characters long'
                 .form-group
                     label.control-label.col-md-3 for="password"  Password
                     .col-md-8
+                      - password_errors = @new_user.errors.on(:new_password) || []
+                      div class=(password_errors.any? ? 'has-error' : '')
                         input.form-control type="password" name="password" 
+                        .help-block= password_errors.any? ? password_errors.join : 'should be at least 4 characters long'
                 .form-group
                     .col-md-2.col-md-offset-3
                         button.btn.btn-sm.btn-primary type="submit" 

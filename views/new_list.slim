@@ -9,9 +9,15 @@
         .panel-body
             form.form-horizontal name:="list" method="post" action=url("/new")
                 .form-group
-                    label.control-label.col-md-2 for="name" List Name
+                    label.control-label.col-md-2 for="name" 
+                        i.glyphicon.glyphicon-exclamation-sign style='color: red;'
+                        span List Name
                     .col-md-6
-                        input.form-control type="text" name="name"
+                        - list_name_errors = @new_list.errors.on(:name) ||[]
+                        div class=(list_name_errors.any? ? 'has-error' : '')
+                            input.form-control type="text" name="name" id='list_name' value=@new_list.name
+                            .help-block= list_name_errors.join(', ') if list_name_errors.any?
+                            
                 hr
                 #items_list.form-group
                     a href='javascript:void(0)' id='add-item' class='col-md-3' Add Item
@@ -33,3 +39,4 @@ css:
 
 javascript:
     $('#logout').show(); 
+    $('#welcome_message').show();

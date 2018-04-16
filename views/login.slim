@@ -1,4 +1,4 @@
-.col-md-4.col-md-offset-4
+.col-md-6.col-md-offset-3
     .has-below
     .panel.panel-primary
         .panel-heading
@@ -13,8 +13,15 @@
                     label.control-label.col-md-3 for="password" Password
                     .col-md-8
                         input.form-control type="password" name="password"
+                        .help-block=(@new_user.nil? ? 'Invalid username or password' : '')  
                 .form-group
                     .col-md-2.col-md-offset-3
                         button.btn.btn-sm.btn-primary type="submit"
-                            i.glyphicon.glyphicon-ok Submit
+                            i.glyphicon.glyphicon-ok 
+                            span  Submit
     a href='/signup' Not a User yet? Sign up here!
+
+css: 
+    .help-block {
+        color: red;
+    }

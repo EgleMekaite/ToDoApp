@@ -1,14 +1,18 @@
 .form-group.item-group.template
     .col-md-2
-        input.form-control type="text" name="items[][name]" placeholder="Item name"
-    .col-md-4
+        div class=(@item_errors.nil? ? '' : 'has-error')
+            input.form-control type="text" name="items[][name]" placeholder="Item name"
+                i.glyphicon.glyphicon-exclamation-sign style='color: red;'
+    
+            .help-block= @item_errors.nil? ? '' : @item_errors.join
+    .col-md-5
         textarea.form-control type="text" name="items[][description]" placeholder="Item description"
     .col-md-1
         input.priority type='checkbox' aria-label='...' name='items[][starred]' 
             i.glyphicon.glyphicon-star-empty Priority?
-    .col-md-4
+    .col-md-3
         span Due Date:
-        input.form-control type='datetime-local' autocomplete='on' name='items[][due_date]' min='#{@min_date}' value='items[][due_date]'
+        input.form-control type='date' autocomplete='on' name='items[][due_date]' min='#{@min_date}' value='items[][due_date]'
     .col-md-1
         button.btn.btn-default.delete-unsaved type='button'
             i.glyphicon.glyphicon-remove

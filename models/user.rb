@@ -8,16 +8,32 @@ class User < Sequel::Model
     one_to_many :logs
     one_to_many :comments
 
-    def validate
-      super
-      errors.add(:name, 'cannot be blank') if !name || name.empty?
-      errors.add(:name, 'already exists') if name && new? && User[:name=>name]
-      errors.add(:password, 'cannot be blank') if !password || password.empty?
-      errors.add(:name, 'not a valid name') unless name =~ /\A[A-Za-z]/
-    end
+    attr_accessor :new_password
 
-    def before_create
+    def before_validation
       self.created_at = Time.now
     end
 
+    def before_save
+      if new_password
+        self.password = Digest::MD5.hexdigest new_password
+      end
+    end
+
+    def validate
+      super
+      validates_presence [:name, :created_at], message: 'please enter a username'
+      validates_format /\A[A-Za-z]/, :name, message: 'please use letters to create your username'
+      validates_min_length 4, :name, message: 'username should be at least 4 characters long'
+      validates_unique :name, message: 'this username is already taken'
+
+      if new_password
+        validates_min_length 4, :new_password, message: 'Password should be at least 4 characters long'
+      end
+    end
+
+    def self.find_by_login name, password
+      md5sum = Digest::MD5.hexdigest password
+      User.first(name: name, password: md5sum)
+    end
 end
