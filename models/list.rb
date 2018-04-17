@@ -23,10 +23,8 @@ class List < Sequel::Model
 
     def self.new_list(name, items, user)
       list = List.new(name: name)
-      #binding.pry
-      if list.valid? && !items.nil?
-        list.save
-        #binding.pry
+      list.save if list.valid? 
+      if !items.nil?  
         items.each do |item|
           if item[:starred].nil?
             checked = 0
@@ -35,61 +33,55 @@ class List < Sequel::Model
           end
           item = Item.new(name: item[:name], description: item[:description], starred: checked, due_date: item[:due_date], list: list, user: user,
           created_at: Time.now, updated_at: Time.now)
-          #binding.pry
           if item.valid?
             item.save
           else
             item
           end
         end
-        Permission.create(list: list, user: user, permission_level: 'read_write', created_at: Time.now,
-            updated_at: Time.now)
-        list
-
-      else
-        list
       end
+      list
     end
 
-    def edit_list id, name, items, starred, user
-        list = List.first(id: id)
-        list.name = name
-        items.each do |item|
-            if item[:starred].nil?
-                checked = 0
-            else
-                checked = 1
-            end
-            i = Item.first(id: item[:id])
-            if i.nil?
-                Item.create(name: item[:name], description: item[:description], starred: checked, due_date: item[:due_date], list: list, user: user,
-                    created_at: Time.now, updated_at: Time.now)
-            else
-                i.name = item[:name]
-                i.description = item[:description]
-                i.starred = checked
-                i.due_date = item[:due_date]
-                i.updated_at = Time.now
-                i.save
-            end 
+    def edit_list id, name, items, user
+      list = List.first(id: id)
+      list.name = name
+      items.each do |item|
+        if item[:starred].nil?
+          checked = 0
+        else
+          checked = 1
         end
-        if list.valid?
-            list.save
+        i = Item.first(id: item[:id])
+        if i.nil?
+          item = Item.new(name: item[:name], description: item[:description], starred: checked, due_date: item[:due_date], list: list, user: user,
+            created_at: Time.now, updated_at: Time.now)
+          if item.valid?
+            item.save
+          else
+            item
+          end
+        else
+          i.name = item[:name]
+          i.description = item[:description]
+          i.starred = checked
+          i.due_date = item[:due_date]
+          i.updated_at = Time.now
+          i.save
         end
+      end
+      list.save if list.valid?
     end
 
-    def add_comment list, user, comments
-
-        comments.each do |comment|
-            comm = Comment.new(user_id: user.id, list_id: list.id, text: comment[:text])
-            if comm.valid?
-                comm.save
-            end
-        end
-        list.save
+    def add_comment(list, user, comments)
+      comments.each do |comment|
+        comm = Comment.new(user_id: user.id, list_id: list.id, text: comment[:text])
+        comm.save if comm.valid?
+      end
+      list.save
     end
 
-    def delete_list list_id, items
+    def delete_list(list_id, items)
       list = List.first(id: list_id)
       permissions = list.permissions
       comments = list.comments

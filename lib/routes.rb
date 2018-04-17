@@ -17,7 +17,6 @@ end
 =end
 
 get '/?' do
-  #binding.pry
   @lists = List.association_join(:permissions).where(user_id: @user.id)
   slim :lists
 end
@@ -36,7 +35,6 @@ post '/new_comment/:list_id' do
   @comments = list.comments
   comment_text = params[:comments][0][:text]
   @new_comment = Comment.new(text: comment_text)
-  #binding.pry
   if @new_comment.valid?
     list.add_comment list, @user, params[:comments]
     redirect "/lists/#{list.id}"
@@ -49,25 +47,24 @@ end
 get '/new/?' do
   # show create list page
   @new_list = List.new
-  #binding.pry
   slim :new_list
 end
 
 post '/new/?' do
   # create a list
   @new_list = List.new_list params[:name], params[:items], @user
-  @items = params[:items]
+  @items = @new_list.items
   @item_errors = []
-  #binding.pry
+  @item_errors << 'Item name cannot be blank' if @items.empty?
   if !@items.nil?
     @items.each do |item|
-      item = Item.new(name: item[:name])
-      #binding.pry
       item.valid? ? item.save : @item_errors << item.errors.on(:name).join
     end
   end
-  #binding.pry
-  if @new_list.save && @item_errors.empty?
+  if @new_list.valid? && @item_errors.empty?
+    Permission.create(list: @new_list, user: @user, permission_level: 'read_write', created_at: Time.now,
+      updated_at: Time.now)
+    @new_list.save
     redirect "/lists/#{@new_list.id}"
   else
     slim :new_list
@@ -75,20 +72,20 @@ post '/new/?' do
 end
 
 get '/edit/:list_id' do
-  # check user permission and show the edit page
-  list = List.first(id: params[:list_id])
-  list_items = list.items
+  # show the edit page
+  @edited_list = List.first(id: params[:list_id])
+  @items = @edited_list.items
   can_edit = true
-  if list.nil?
+  if @edited_list.nil?
     can_edit = false
-  elsif list.shared_with == 'public'
-    permission = Permission.first(list: list, user: @user)
+  elsif @edited_list.shared_with == 'public'
+    permission = Permission.first(list: @edited_list, user: @user)
     if permission.nil? || permission.permission_level == 'read_only'
       can_edit = false
     end
   end
   if can_edit
-    slim :edit_list, locals: {list: list, list_items: list_items}
+    slim :edit_list
   else
     slim :error, locals: {error: 'Invalid permissions'}
   end
@@ -96,9 +93,15 @@ end
 
 post '/edit/:list_id' do
   # update the list
-  list = List.first(id: params[:list_id])
-  list.edit_list params[:list_id], params[:name], params[:items], params[:starred], @user
-  redirect "/lists/#{list[:id]}"
+  @edited_list = List.first(id: params[:list_id])
+  @edited_list.edit_list params[:list_id], params[:name], params[:items], @user
+  @items = params[:items]
+  
+  if @edited_list.save 
+    redirect "/lists/#{@edited_list[:id]}"
+  else
+    slim :edit_list
+  end
 end
 
 get '/delete/:list_id' do

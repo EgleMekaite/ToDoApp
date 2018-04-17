@@ -3,17 +3,20 @@
     .panel.panel-primary
         .panel-heading
             h3.panel-title style='margin-top: 6px;' Edit List
-            a.btn.btn-primary.back href='/lists/#{list[:id]}' type='button'
+            a.btn.btn-primary.back href='/lists/#{@edited_list[:id]}' type='button'
                 span Back to List
                 i.glyphicon.glyphicon-chevron-right
         .panel-body
-            form.form-horizontal name:="list" method="post" action=url("/edit/#{list[:id]}")
+            form.form-horizontal name:="list" method="post" action=url("/edit/#{@edited_list[:id]}")
                 .form-group
                     label.control-label.col-md-2 for="name" List name
                     .col-md-6
-                        input.form-control type="text" name="name" value='#{list[:name]}'
+                        - list_name_errors = @edited_list.errors.on(:name) || []
+                        div class=(list_name_errors.any? ? 'has-error' : '')
+                            input.form-control type="text" name="name" value='#{@edited_list[:name]}'
+                            .help-block= list_name_errors.join(', ') if list_name_errors.any?
                 hr
-                -list_items.each do |item|
+                -@items.each do |item|
                     
                     .form-group.item-group
                         .col-md-2 style='display: none'
@@ -23,7 +26,7 @@
                         .col-md-5
                             textarea.form-control type="text" name="items[][description]" #{item[:description]}  
                         .col-md-1
-                            - if item.starred == true
+                            - if item[:starred] == true
                                 input.priority type='checkbox' aria-label='...' name='items[][starred]' checked=true
                                     i.glyphicon.glyphicon-star-empty Priority?
                             - else
@@ -31,7 +34,7 @@
                                     i.glyphicon.glyphicon-star-empty Priority?
                             end
                         .col-md-3
-                            input.form-control type='date' autocomplete='on' name='items[][due_date]' min='#{@min_date}' value='#{item.due_date&.strftime("%Y-%m-%d")}'
+                            input.form-control type='date' autocomplete='on' name='items[][due_date]' min='#{@min_date}' value='#{item[:due_date]&.strftime("%Y-%m-%d")}'
                         .col-md-1
                             button.btn.btn-default.delete id="item-#{item[:id]}" type='button'
                                 i.glyphicon.glyphicon-remove

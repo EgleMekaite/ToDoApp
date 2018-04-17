@@ -1,10 +1,9 @@
 .form-group.item-group.template
     .col-md-2
-        div class=(@item_errors.nil? ? '' : 'has-error')
-            input.form-control type="text" name="items[][name]" placeholder="Item name"
-                i.glyphicon.glyphicon-exclamation-sign style='color: red;'
-    
-            .help-block= @item_errors.nil? ? '' : @item_errors.join
+        input.form-control type="text" name="items[][name]" placeholder="Item name"
+            i.glyphicon.glyphicon-exclamation-sign style='color: red;'
+            span
+                small Cannot be blank
     .col-md-5
         textarea.form-control type="text" name="items[][description]" placeholder="Item description"
     .col-md-1

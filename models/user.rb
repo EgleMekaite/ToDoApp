@@ -28,7 +28,7 @@ class User < Sequel::Model
       validates_unique :name, message: 'this username is already taken'
 
       if new_password
-        validates_min_length 4, :new_password, message: 'Password should be at least 4 characters long'
+        validates_min_length 4, :new_password, message: 'password should be at least 4 characters long'
       end
     end
 

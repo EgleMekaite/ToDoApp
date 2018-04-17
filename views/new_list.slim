@@ -19,6 +19,9 @@
                             .help-block= list_name_errors.join(', ') if list_name_errors.any?
                             
                 hr
+                div class=(@item_errors.nil? ? '' : 'has-error')
+                    .help-block= @item_errors.nil? ? '' :  @item_errors.join
+                .has-below
                 #items_list.form-group
                     a href='javascript:void(0)' id='add-item' class='col-md-3' Add Item
                 hr
