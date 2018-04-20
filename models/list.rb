@@ -7,8 +7,6 @@ class List < Sequel::Model
     one_to_many :logs
     one_to_many :comments
 
-    attr_writer :item
-
     def before_save
       self.updated_at = Time.now
       self.created_at ||= updated_at
@@ -16,31 +14,7 @@ class List < Sequel::Model
 
     def validate
       super
-      #errors.add(:items, 'Must include at least one item') if !items || items.empty?
-      errors.add(:name, 'Name cannot be blank') if !name || name.empty?
-      #errors.add(:name, 'not a valid name') unless name =~ /\A[A-Za-z]/
-    end
-
-    def self.new_list(name, items, user)
-      list = List.new(name: name)
-      list.save if list.valid? 
-      if !items.nil?  
-        items.each do |item|
-          if item[:starred].nil?
-            checked = 0
-          else
-            checked = 1
-          end
-          item = Item.new(name: item[:name], description: item[:description], starred: checked, due_date: item[:due_date], list: list, user: user,
-          created_at: Time.now, updated_at: Time.now)
-          if item.valid?
-            item.save
-          else
-            item
-          end
-        end
-      end
-      list
+      validates_presence :name, message: 'Name cannot be blank'
     end
 
     def edit_list id, name, items, user

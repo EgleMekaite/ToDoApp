@@ -22,13 +22,13 @@ class User < Sequel::Model
 
     def validate
       super
-      validates_presence [:name, :created_at], message: 'please enter a username'
-      validates_format /\A[A-Za-z]/, :name, message: 'please use letters to create your username'
-      validates_min_length 4, :name, message: 'username should be at least 4 characters long'
-      validates_unique :name, message: 'this username is already taken'
+      validates_presence [:name, :created_at], message: 'Please enter a username'
+      validates_format /\A[A-Za-z]/, :name, message: 'Please use letters to create your username'
+      validates_min_length 4, :name, message: 'Username should be at least 4 characters long'
+      validates_unique :name, message: 'This username is already taken'
 
       if new_password
-        validates_min_length 4, :new_password, message: 'password should be at least 4 characters long'
+        validates_min_length 4, :new_password, message: 'Password should be at least 4 characters long'
       end
     end
 

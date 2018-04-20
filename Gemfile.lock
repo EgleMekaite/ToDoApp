@@ -4,6 +4,7 @@ GEM
     backports (3.11.2)
     byebug (10.0.2)
     coderay (1.1.2)
+    digest (0.0.1)
     method_source (0.9.0)
     multi_json (1.13.1)
     mustermann (1.0.2)
@@ -48,6 +49,7 @@ PLATFORMS
 
 DEPENDENCIES
   bundler
+  digest
   mysql2
   pry
   pry-byebug

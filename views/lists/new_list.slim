@@ -17,11 +17,11 @@
                         div class=(list_name_errors.any? ? 'has-error' : '')
                             input.form-control type="text" name="name" id='list_name' value=@new_list.name
                             .help-block= list_name_errors.join(', ') if list_name_errors.any?
+                        div class=(@item_errors.empty? ? '' : 'has-error')
+                            .help-block = @item_errors.empty? ? '' : @item_errors[0]
+                       
                             
                 hr
-                div class=(@item_errors.nil? ? '' : 'has-error')
-                    .help-block= @item_errors.nil? ? '' :  @item_errors.join
-                .has-below
                 #items_list.form-group
                     a href='javascript:void(0)' id='add-item' class='col-md-3' Add Item
                 hr
@@ -32,7 +32,7 @@
                             span  Create
   
 script type="text/template" id='item_template'
-    == slim :'/_item_template'
+    == slim :'lists/_item_template'
 
 css:
     .panel-heading{

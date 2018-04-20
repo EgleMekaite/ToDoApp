@@ -1,11 +1,12 @@
 require 'sinatra'
 require 'pry'
+class Todo < Sinatra::Application
 
 before do
   if !['login', 'signup'].include? (request.path_info.split('/')[1]) and session[:user_id].nil?
     redirect '/login'
   end
-  @min_date = Time.now.strftime("%Y-%m-%dT%H:%M")
+  @min_date = Time.now.strftime("%Y-%m-%d")
   @user = User.first(id: session[:user_id])
 end
 =begin
@@ -18,7 +19,7 @@ end
 
 get '/?' do
   @lists = List.association_join(:permissions).where(user_id: @user.id)
-  slim :lists
+  slim :'/lists/lists'
 end
 
 get '/lists/:list_id' do
@@ -26,7 +27,7 @@ get '/lists/:list_id' do
   list_items = list.items_dataset.order(Sequel.desc(:starred))
   @comments = list.comments
   @new_comment = Comment.new
-  slim :list, locals: { list_items: list_items, list: list }
+  slim :'lists/list', locals: { list_items: list_items, list: list }
 end
 
 post '/new_comment/:list_id' do
@@ -39,7 +40,7 @@ post '/new_comment/:list_id' do
     list.add_comment list, @user, params[:comments]
     redirect "/lists/#{list.id}"
   else
-    slim :list, locals: { list_items: list_items, list: list } 
+    slim :'lists/list', locals: { list_items: list_items, list: list } 
   end
   
 end
@@ -47,28 +48,41 @@ end
 get '/new/?' do
   # show create list page
   @new_list = List.new
-  slim :new_list
+  @items = @new_list.items
+  @item_errors = []
+  slim :'lists/new_list'
 end
 
 post '/new/?' do
   # create a list
-  @new_list = List.new_list params[:name], params[:items], @user
-  @items = @new_list.items
+  @new_list = List.new(name: params[:name])
+  @item_params = params[:items] || []
+  @items = []
   @item_errors = []
-  @item_errors << 'Item name cannot be blank' if @items.empty?
-  if !@items.nil?
-    @items.each do |item|
-      item.valid? ? item.save : @item_errors << item.errors.on(:name).join
+  #binding.pry
+  DB.transaction do
+    if @new_list.save
+
+      @permission = @new_list.add_permission(user: @user, permission_level: 'read_write')
+
+      @item_params.each do |item_attributes|
+        item = Item.new(list: @new_list, user: @user)
+        item.update_fields(item_attributes, [:name, :description, :starred, :created_at, :updated_at, :due_date])
+        item[:starred].nil? ? checked = 0 : checked = 1
+        item.starred = checked
+        @items << item
+      end
+
+      if @items.any? { |i| i.errors.any? } || @new_list.errors.any?
+        @items.each { |i|  @item_errors << i.errors.on(:name).join }
+        raise Sequel::Rollback
+      else
+        redirect "/lists/#{@new_list.id}"
+      end
+
     end
   end
-  if @new_list.valid? && @item_errors.empty?
-    Permission.create(list: @new_list, user: @user, permission_level: 'read_write', created_at: Time.now,
-      updated_at: Time.now)
-    @new_list.save
-    redirect "/lists/#{@new_list.id}"
-  else
-    slim :new_list
-  end
+  slim :'lists/new_list'
 end
 
 get '/edit/:list_id' do
@@ -85,9 +99,9 @@ get '/edit/:list_id' do
     end
   end
   if can_edit
-    slim :edit_list
+    slim :'lists/edit_list'
   else
-    slim :error, locals: {error: 'Invalid permissions'}
+    slim :'authentication/error', locals: {error: 'Invalid permissions'}
   end
 end
 
@@ -100,7 +114,7 @@ post '/edit/:list_id' do
   if @edited_list.save 
     redirect "/lists/#{@edited_list[:id]}"
   else
-    slim :edit_list
+    slim :'lists/edit_list'
   end
 end
 
@@ -124,14 +138,14 @@ get '/delete/comment/:comment_id' do
   end
   redirect back
 end
-    
+
 get '/signup/?' do
   # show signup form
   @new_user = User.new
   if session[:user_id].nil?
-    slim :signup
+    slim :'authentication/signup'
   else
-    slim :error, :locals => {:error => 'Please log out first'}
+    slim :'authentication/error', :locals => {:error => 'Please log out first'}
   end
 end
 
@@ -141,7 +155,7 @@ post '/signup/?' do
     session[:user_id] = @new_user.id
     redirect '/'
   else
-    slim :signup
+    slim :'authentication/signup'
   end
 end
 
@@ -149,9 +163,9 @@ get '/login/?' do
   # show a login page
   @new_user = User.new
   if session[:user_id].nil?
-    slim :login
+    slim :'authentication/login'
   else
-    slim :error, locals: {error: 'You are logged in'}
+    slim :'authentication/error', locals: {error: 'You are logged in'}
   end
 end
 
@@ -169,4 +183,5 @@ end
 get '/logout/?' do
   session[:user_id] = nil
   redirect '/login'
+end
 end
