@@ -1,21 +1,21 @@
-require 'sinatra'
+# frozen_string_literal: true
+
+# require 'sinatra'
 require 'pry'
 class Todo < Sinatra::Application
 
 before do
-  if !['login', 'signup'].include? (request.path_info.split('/')[1]) and session[:user_id].nil?
+  if !['login', 'signup'].include? (request.path_info.split('/')[1]) && session[:user_id].nil?
     redirect '/login'
   end
   @min_date = Time.now.strftime("%Y-%m-%d")
-  @user = User.first(id: session[:user_id])
 end
-=begin
+
 helpers do
   def current_user
-    @current_user ||= User.first(id: session[:user_id]) if session[:user_id]
+    @user ||= User.first(id: session[:user_id]) if session[:user_id]
   end
 end
-=end
 
 get '/?' do
   @lists = List.association_join(:permissions).where(user_id: @user.id)
@@ -42,7 +42,6 @@ post '/new_comment/:list_id' do
   else
     slim :'lists/list', locals: { list_items: list_items, list: list } 
   end
-  
 end
 
 get '/new/?' do
@@ -59,7 +58,7 @@ post '/new/?' do
   @item_params = params[:items] || []
   @items = []
   @item_errors = []
-  #binding.pry
+  # binding.pry
   DB.transaction do
     if @new_list.save
 
@@ -67,8 +66,8 @@ post '/new/?' do
 
       @item_params.each do |item_attributes|
         item = Item.new(list: @new_list, user: @user)
-        item.update_fields(item_attributes, [:name, :description, :starred, :created_at, :updated_at, :due_date])
-        item[:starred].nil? ? checked = 0 : checked = 1
+        item.update_fields(item_attributes, %i[name description starred created_at updated_at due_date])
+        checked = item[:starred].nil? ? 0 : 1
         item.starred = checked
         @items << item
       end
@@ -101,7 +100,7 @@ get '/edit/:list_id' do
   if can_edit
     slim :'lists/edit_list'
   else
-    slim :'authentication/error', locals: {error: 'Invalid permissions'}
+    slim :'authentication/error', locals: { error: 'Invalid permissions' }
   end
 end
 
@@ -110,8 +109,7 @@ post '/edit/:list_id' do
   @edited_list = List.first(id: params[:list_id])
   @edited_list.edit_list params[:list_id], params[:name], params[:items], @user
   @items = params[:items]
-  
-  if @edited_list.save 
+  if @edited_list.save
     redirect "/lists/#{@edited_list[:id]}"
   else
     slim :'lists/edit_list'
@@ -133,9 +131,7 @@ end
 get '/delete/comment/:comment_id' do
   comment = Comment.first(id: params[:comment_id])
   creation_time = comment.creation_time
-  if Time.now < creation_time + 900
-    comment.destroy
-  end
+  comment.destroy if Time.now < creation_time + 900
   redirect back
 end
 
@@ -145,7 +141,7 @@ get '/signup/?' do
   if session[:user_id].nil?
     slim :'authentication/signup'
   else
-    slim :'authentication/error', :locals => {:error => 'Please log out first'}
+    slim :'authentication/error', locals: { error: 'Please log out first' }
   end
 end
 
@@ -162,18 +158,20 @@ end
 get '/login/?' do
   # show a login page
   @new_user = User.new
+  # binding.pry
   if session[:user_id].nil?
     slim :'authentication/login'
   else
-    slim :'authentication/error', locals: {error: 'You are logged in'}
+    slim :'authentication/error', locals: { error: 'You are logged in' }
   end
 end
 
 post '/login/?' do
+  # binding.pry
   # validate user credentials
   @logged_user = User.find_by_login(params[:name], params[:password])
   if @logged_user.nil?
-    slim :login
+    slim :'authentication/login'
   else
     session[:user_id] = @logged_user.id
     redirect '/'

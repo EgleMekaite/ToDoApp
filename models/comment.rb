@@ -1,3 +1,6 @@
+# user class
+# frozen_string_literal: true
+
 class Comment < Sequel::Model
   set_primary_key :id
 
@@ -13,5 +16,4 @@ class Comment < Sequel::Model
     self.creation_date = Time.now
     self.creation_time = Time.now
   end
-
 end

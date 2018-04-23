@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+require 'pry'
+
 class Todo < Sinatra::Application
   get '/login/?' do
     # show a login page
@@ -5,18 +9,19 @@ class Todo < Sinatra::Application
     if session[:user_id].nil?
       slim :'authentication/login'
     else
-      slim :'authentication/error', locals: {error: 'You are logged in'}
+      slim :'authentication/error', locals: { error: 'You are logged in' }
     end
   end
 
   post '/login/?' do
     # validate user credentials
+    # binding.pry
     @logged_user = User.find_by_login(params[:name], params[:password])
     if @logged_user.nil?
       slim :login
     else
       session[:user_id] = @logged_user.id
-      redirect '/'
+      redirect '/lists'
     end
   end
 
@@ -26,15 +31,15 @@ class Todo < Sinatra::Application
     if session[:user_id].nil?
       slim :'authentication/signup'
     else
-      slim :'authentication/error', :locals => {:error => 'Please log out first'}
+      slim :'authentication/error', locals: { error: 'Please log out first' }
     end
   end
-  
+
   post '/signup/?' do
     @new_user = User.new(name: params[:name], new_password: params[:password])
     if @new_user.save
       session[:user_id] = @new_user.id
-      redirect '/'
+      redirect '/lists'
     else
       slim :'authentication/signup'
     end

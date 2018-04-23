@@ -1,6 +1,9 @@
-class Log < Sequel::Model
-    set_primary_key :id
+# log class
+# frozen_string_literal: true
 
-    many_to_one :user
-    many_to_one :list
+class Log < Sequel::Model
+  set_primary_key :id
+
+  many_to_one :user
+  many_to_one :list
 end

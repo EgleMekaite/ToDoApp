@@ -7,7 +7,7 @@
                 span Back to List
                 i.glyphicon.glyphicon-chevron-right
         .panel-body
-            form.form-horizontal name:="list" method="post" action=url("/edit/#{@edited_list[:id]}")
+            form.form-horizontal name:="list" method="post" action=url("/lists/#{@edited_list[:id]}/edit")
                 .form-group
                     label.control-label.col-md-2 for="name" List name
                     .col-md-6
