@@ -45,9 +45,15 @@
             .has-below
             
             a id='view_comments'
-            span id='num_li' 
-            == slim :'lists/_comment_view'
-
+            span id='num_li'
+            .has-below
+            ul.col-md-12.list-group.comments
+                -@comments.each do |comment|
+                    li.list-group-item.comment id='comment-#{comment[:id]}' style='display: none;'
+                        span #{comment[:text]}
+                        - if Time.now < comment.creation_time + 900
+                            a.btn.btn-default.delete-comment id='delete_comment_btn-#{comment[:id]}' type='button' href='/lists/#{list.id}/comments/#{comment[:id]}/delete'
+                                i.glyphicon.glyphicon-remove
     
 css:
     .starred {
@@ -56,6 +62,14 @@ css:
     #action-buttons {
         display: flex;
         justify-content: space-between;
+    }
+    .comments > li {
+        display: flex;
+        justify-content: space-between;
+    }
+    .comments > li > span {
+        font-style: italic;
+        color: darkred;
     }
 
 javascript:

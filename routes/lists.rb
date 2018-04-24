@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 class Todo < Sinatra::Application
-  get '/lists' do
+  get '/lists/?' do
     @lists = List.association_join(:permissions).where(user_id: @user.id)
     slim :'/lists/lists'
   end
 
-  get '/lists/:list_id' do
+  get '/lists/:list_id/?' do
     list = List.first(id: params[:list_id])
     list_items = list.items_dataset.order(Sequel.desc(:starred))
     @comments = list.comments
@@ -14,7 +14,7 @@ class Todo < Sinatra::Application
     slim :'lists/list', locals: { list_items: list_items, list: list }
   end
 
-  post '/lists/:list_id/new_comment' do
+  post '/lists/:list_id/new_comment/?' do
     list = List.first(id: params[:list_id])
     list_items = list.items_dataset.order(Sequel.desc(:starred))
     @comments = list.comments
@@ -29,6 +29,7 @@ class Todo < Sinatra::Application
   end
 
   get '/lists/new/?' do
+    binding.pry
     # show create list page
     @new_list = List.new
     @items = @new_list.items
@@ -42,12 +43,9 @@ class Todo < Sinatra::Application
     @item_params = params[:items] || []
     @items = []
     @item_errors = []
-    # binding.pry
     DB.transaction do
       if @new_list.save
-
         @permission = @new_list.add_permission(user: @user, permission_level: 'read_write')
-
         @item_params.each do |item_attributes|
           item = Item.new(list: @new_list, user: @user)
           item.update_fields(item_attributes, %i[name description starred created_at updated_at due_date])
@@ -89,16 +87,15 @@ class Todo < Sinatra::Application
   post '/lists/:list_id/edit' do
     # update the list
     @edited_list = List.first(id: params[:list_id])
-    # @edited_list.edit_list params[:list_id], params[:name], params[:items], @user
     @item_params = params[:items] || []
     @items = []
     @item_errors = []
     DB.transaction do
       @edited_list.name = params[:name]
-      @list.save
+      @edited_list.save
 
       @item_params.each do |item_attributes|
-        item = @list.items_dataset[id: item_attributes[:id]] || Item.new(list: @list, user: @user)
+        item = @edited_list.items_dataset[id: item_attributes[:id]] || Item.new(list: @edited_list, user: @user)
         item.update_fields(item_attributes, %i[name description starred created_at updated_at due_date])
         checked = item[:starred].nil? ? 0 : 1
         item.starred = checked
@@ -109,7 +106,7 @@ class Todo < Sinatra::Application
         @items.each { |i|  @item_errors << i.errors.on(:name).join }
         raise Sequel::Rollback
       else
-        redirect "/lists/#{@new_list.id}" 
+        redirect "/lists/#{@edited_list.id}"
       end
       slim :'/lists/edit_list'
     end

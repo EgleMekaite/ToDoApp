@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'lib/routes'
 require_relative 'routes/application'
 require_relative 'routes/authentication'
 require_relative 'routes/lists'
@@ -10,7 +9,7 @@ class Todo < Sinatra::Application
   set :environment, :development
   configure do
     register Sinatra::Reloader
-    # also_reload 'routes/*.rb'
+    also_reload 'routes/*.rb'
     also_reload 'models/*.rb'
     after_reload do
       puts "reloaded at #{Time.now}"
@@ -28,6 +27,5 @@ class Todo < Sinatra::Application
   use Rack::MethodOverride
 
   Dir[File.join(File.dirname(__FILE__), 'models', '*.rb')].each { |model| require model }
-  # Dir[File.join(File.dirname(__FILE__), 'lib', '*.rb')].each { |lib| require lib }
   Dir[File.join(File.dirname(__FILE__), 'routes', '*.rb')].each { |route| require route }
 end

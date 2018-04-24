@@ -15,10 +15,9 @@ class Todo < Sinatra::Application
 
   post '/login/?' do
     # validate user credentials
-    # binding.pry
     @logged_user = User.find_by_login(params[:name], params[:password])
     if @logged_user.nil?
-      slim :login
+      slim :'authentication/login'
     else
       session[:user_id] = @logged_user.id
       redirect '/lists'

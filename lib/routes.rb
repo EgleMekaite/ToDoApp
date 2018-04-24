@@ -1,21 +1,26 @@
 # frozen_string_literal: true
 
-# require 'sinatra'
+require 'sinatra'
 require 'pry'
+
 class Todo < Sinatra::Application
 
 before do
+  # binding.pry
   if !['login', 'signup'].include? (request.path_info.split('/')[1]) && session[:user_id].nil?
     redirect '/login'
   end
   @min_date = Time.now.strftime("%Y-%m-%d")
+  
 end
+
 
 helpers do
   def current_user
     @user ||= User.first(id: session[:user_id]) if session[:user_id]
   end
 end
+
 
 get '/?' do
   @lists = List.association_join(:permissions).where(user_id: @user.id)
@@ -157,6 +162,7 @@ end
 
 get '/login/?' do
   # show a login page
+  binding.pry
   @new_user = User.new
   # binding.pry
   if session[:user_id].nil?

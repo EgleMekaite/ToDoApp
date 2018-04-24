@@ -24,19 +24,15 @@ $(document).ready(function(){
 
     $('.delete').on('click', function(){
         var item_id = $(this).attr('id').split('-')[1];
+        var list_id = $(this).attr('data-listinfo').split('-')[1];
         if (confirm("Are you sure you want to delete this item?")) {
-            window.location.replace('/delete/item/' + item_id + '');
+            window.location.replace('/lists/' + list_id + '/items/' + item_id + '/delete');
         }
     });
 
     $(document).on('click', '[data-identifyer]', function(){
         var button_id = $(this).attr('data-identifyer').split('-')[1];
         $('#new-'+ button_id).remove();
-    });
-
-    $('.delete-comment').on('click', function(){
-        var comment_id = $(this).attr('id').split('-')[1];
-        window.location.replace('/delete/comment/' + comment_id + '');
     });
 
 });

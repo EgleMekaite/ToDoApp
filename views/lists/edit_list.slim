@@ -35,7 +35,7 @@
                         .col-md-3
                             input.form-control type='date' autocomplete='on' name='items[][due_date]' min='#{@min_date}' value='#{item[:due_date]&.strftime("%Y-%m-%d")}'
                         .col-md-1
-                            button.btn.btn-default.delete id="item-#{item[:id]}" type='button'
+                            button.btn.btn-default.delete id="item-#{item[:id]}" data-listinfo='list-#{@edited_list.id}' type='button'
                                 i.glyphicon.glyphicon-remove
                 end
                     #items_list.form-group
