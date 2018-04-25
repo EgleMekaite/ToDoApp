@@ -15,12 +15,12 @@
             .has-below
             - comment_errors = @new_comment.errors.on(:text) || []
             .has-error
-                .help-block= comment_errors.any? ? comment_errors.join : ''
+                .help-block = comment_errors.any? ? comment_errors.join : ''
             .collapse.col-md-10 id='collapse-#{list.id}' class=(comment_errors.any? ? 'has-error' : '')
                 form.form-horizontal name:="comment" method="post" action=url("/lists/#{list[:id]}/new_comment")
                     .form-group
                         .col-md-10.input-group
-                            input.form-control type='text' name="comments[][text]"
+                            input.form-control type='text' name="[text"
                             span.input-group-btn
                                 button.btn.btn-default type='submit' Submit
                 
@@ -73,9 +73,6 @@ css:
     }
 
 javascript:
-    $('#create_new a').show();  
-    $('#logout').show(); 
-    $('#welcome_message').show();
     var link = $('#view_comments');
     if($('ul.comments li').length == 0){
         link.text('This list has no comments');

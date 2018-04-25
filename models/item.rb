@@ -10,4 +10,9 @@ class Item < Sequel::Model
     super
     validates_presence :name, message: 'Item name cannot be blank'
   end
+
+  def before_save
+    self.updated_at = Time.now
+    self.created_at ||= updated_at
+  end
 end

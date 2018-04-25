@@ -35,4 +35,8 @@ $(document).ready(function(){
         $('#new-'+ button_id).remove();
     });
 
+    if ($('ul.lists > li').length == 0){
+        $('ul.lists').append('<li class="list-group-item">You have no lists</li>');
+    }
+
 });

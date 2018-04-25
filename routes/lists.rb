@@ -6,30 +6,7 @@ class Todo < Sinatra::Application
     slim :'/lists/lists'
   end
 
-  get '/lists/:list_id/?' do
-    list = List.first(id: params[:list_id])
-    list_items = list.items_dataset.order(Sequel.desc(:starred))
-    @comments = list.comments
-    @new_comment = Comment.new
-    slim :'lists/list', locals: { list_items: list_items, list: list }
-  end
-
-  post '/lists/:list_id/new_comment/?' do
-    list = List.first(id: params[:list_id])
-    list_items = list.items_dataset.order(Sequel.desc(:starred))
-    @comments = list.comments
-    comment_text = params[:comments][0][:text]
-    @new_comment = Comment.new(text: comment_text)
-    if @new_comment.valid?
-      list.add_comment list, @user, params[:comments]
-      redirect "/lists/#{list.id}"
-    else
-      slim :'lists/list', locals: { list_items: list_items, list: list }
-    end
-  end
-
   get '/lists/new/?' do
-    binding.pry
     # show create list page
     @new_list = List.new
     @items = @new_list.items
@@ -58,18 +35,42 @@ class Todo < Sinatra::Application
           @items.each { |i|  @item_errors << i.errors.on(:name).join }
           raise Sequel::Rollback
         else
+          flash[:success] = "List '#{@new_list.name}' has been successfully created"
           redirect "/lists/#{@new_list.id}"
         end
-
       end
     end
     slim :'lists/new_list'
+  end
+
+  get '/lists/:list_id/?' do
+    list = List.first(id: params[:list_id])
+    list_items = list.items_dataset.order(Sequel.desc(:starred))
+    @comments = list.comments
+    @new_comment = Comment.new
+    slim :'lists/list', locals: { list_items: list_items, list: list }
+  end
+
+  post '/lists/:list_id/new_comment/?' do
+    list = List.first(id: params[:list_id])
+    list_items = list.items_dataset.order(Sequel.desc(:starred))
+    @comments = list.comments
+    @new_comment = Comment.new(text: params[:text])
+    if @new_comment.valid?
+      @new_comment.set(list: list, user: @user)
+      @new_comment.save
+      list.save
+      redirect "/lists/#{list.id}"
+    else
+      slim :'lists/list', locals: { list_items: list_items, list: list }
+    end
   end
 
   get '/lists/:list_id/edit' do
     # show the edit page
     @edited_list = List.first(id: params[:list_id])
     @items = @edited_list.items
+    @item_errors = []
     can_edit = true
     if @edited_list.nil?
       can_edit = false
@@ -92,8 +93,6 @@ class Todo < Sinatra::Application
     @item_errors = []
     DB.transaction do
       @edited_list.name = params[:name]
-      @edited_list.save
-
       @item_params.each do |item_attributes|
         item = @edited_list.items_dataset[id: item_attributes[:id]] || Item.new(list: @edited_list, user: @user)
         item.update_fields(item_attributes, %i[name description starred created_at updated_at due_date])
@@ -101,21 +100,17 @@ class Todo < Sinatra::Application
         item.starred = checked
         @items << item
       end
-
-      if @items.any? { |i| i.errors.any? } || @edited_list.errors.any?
-        @items.each { |i|  @item_errors << i.errors.on(:name).join }
-        raise Sequel::Rollback
-      else
-        redirect "/lists/#{@edited_list.id}"
+      if @edited_list.save
+        if @items.any? { |i| i.errors.any? } || @edited_list.errors.any?
+          @items.each { |i| @item_errors << i.errors.on(:name).join if i.errors.any? }
+          raise Sequel::Rollback
+        else
+          flash[:success] = 'List has been successfully updated'
+          redirect "/lists/#{@edited_list.id}"
+        end
       end
-      slim :'/lists/edit_list'
     end
-
-    if @edited_list.save
-      redirect "/lists/#{@edited_list[:id]}"
-    else
-      slim :'lists/edit_list'
-    end
+    slim :'/lists/edit_list'
   end
 
   get '/lists/:list_id/delete' do

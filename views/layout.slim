@@ -8,11 +8,6 @@ html
     link rel="stylesheet" href="/css/bootstrap.min.css"
     link rel="stylesheet" href="/css/bootstrap-theme.min.css"
 
-    css:
-      .has-below {
-        padding-bottom: 20px;
-      }
-
   body
     .container-fluid
       .col-md-12
@@ -27,27 +22,38 @@ html
                     span.icon-bar
                   a.navbar-brand href=url('/lists')
                     i.glyphicon.glyphicon-home
-                .collapse.navbar-collapse 
-                  ul.nav.navbar-nav.navbar-left id='welcome_message' style='display: none;'
-                    - if !@user.nil?
+                - if current_user
+                  .collapse.navbar-collapse 
+                    ul.nav.navbar-nav.navbar-left id='welcome_message'
                       li.nav-item
                         a
                           span Logged In: #{@user.name}
-                  ul.nav.navbar-nav.navbar-left id='create_new'
-                    li 
-                      a href='/lists/new' style='display: none'
-                        i.glyphicon.glyphicon-plus-sign
-                        span  Create a New List
-                  a.btn.btn-default.navbar-btn.navbar-right href='/logout' type='button' id='logout' style='margin-right: 10px; display: none'
-                      i.glyphicon.glyphicon-log-out
-                      span  Log Out
+                    ul.nav.navbar-nav.navbar-left id='create_new'
+                      li 
+                        a href='/lists/new'
+                          i.glyphicon.glyphicon-plus-sign
+                          span  Create a New List
+                    a.btn.btn-default.navbar-btn.navbar-right href='/logout' type='button' id='logout' style='margin-right: 10px;'
+                        i.glyphicon.glyphicon-log-out
+                        span  Log Out
 
           .has-below
           .has-below
           .has-below
 
-          /#flash.error
-            a.close data-dismiss='alert' &#215;
-            flash[:error]
         .row
-          ==yield
+          == styled_flash
+        .row
+          == yield
+
+css:
+  .has-below {
+    padding-bottom: 20px;
+  }
+  .success {
+    background-color: #16bf16;
+    color: white;
+    text-align: center;
+    padding: 6px;
+    border-radius: 0.25em;
+  }

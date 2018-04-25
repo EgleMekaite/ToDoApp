@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'sinatra/reloader'
+require 'sinatra/flash'
 require_relative 'routes/application'
 require_relative 'routes/authentication'
 require_relative 'routes/lists'
@@ -7,8 +9,8 @@ require 'yaml'
 
 class Todo < Sinatra::Application
   set :environment, :development
+  register Sinatra::Flash
   configure do
-    register Sinatra::Reloader
     also_reload 'routes/*.rb'
     also_reload 'models/*.rb'
     after_reload do
@@ -16,7 +18,7 @@ class Todo < Sinatra::Application
     end
   end
   env = ENV['RACK_ENV'] || 'development'
-  DB = Sequel.connect(YAML.load(File.open('database.yml'))[env])
+  DB = Sequel.connect(YAML.safe_load(File.open('database.yml'))[env])
 
   enable :sessions
   # Do not throw exception if model cannot be saved. Just return nil
