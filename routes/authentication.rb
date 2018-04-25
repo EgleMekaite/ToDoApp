@@ -46,6 +46,7 @@ class Todo < Sinatra::Application
 
   get '/logout/?' do
     session[:user_id] = nil
+    flash[:success] = 'You have successfully logged out'
     redirect '/login'
   end
 end

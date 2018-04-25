@@ -1,15 +1,17 @@
 
 .form-group.item-group.template
-    .col-md-2
+    .col-md-2 style='margin-bottom: 1.25em;'
         input.form-control type="text" name="items[][name]" placeholder="Item name"
-    .col-md-5
+    .col-md-5 style='margin-bottom: 1.25em;'
         textarea.form-control type="text" name="items[][description]" placeholder="Item description"
-    .col-md-1
+    .col-md-1.col-sm-3
         input.priority type='checkbox' aria-label='...' name='items[][starred]' 
-            i.glyphicon.glyphicon-star-empty Priority?
-    .col-md-3
-        span Due Date:
+        small  Priority? 
+        i.glyphicon.glyphicon-star-empty 
+    .col-md-3.col-sm-7
+        label Due Date:
         input.form-control type='date' autocomplete='on' name='items[][due_date]' min='#{@min_date}' value='items[][due_date]'
-    .col-md-1
+    .col-md-1.col-sm-2
         button.btn.btn-default.delete-unsaved type='button'
-            i.glyphicon.glyphicon-remove    
+            i.glyphicon.glyphicon-remove style='color: red;' 
+hr class='template_hr'

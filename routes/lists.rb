@@ -8,39 +8,40 @@ class Todo < Sinatra::Application
 
   get '/lists/new/?' do
     # show create list page
-    @new_list = List.new
-    @items = @new_list.items
+    @list = List.new
+    @items = @list.items
     @item_errors = []
-    slim :'lists/new_list'
+    slim :'lists/edit_list'
   end
 
   post '/lists/new/?' do
     # create a list
-    @new_list = List.new(name: params[:name])
+    @list = List.new(name: params[:name])
     @item_params = params[:items] || []
     @items = []
     @item_errors = []
     DB.transaction do
-      if @new_list.save
-        @permission = @new_list.add_permission(user: @user, permission_level: 'read_write')
+      if @list.save
+        @permission = @list.add_permission(user: @user, permission_level: 'read_write')
         @item_params.each do |item_attributes|
-          item = Item.new(list: @new_list, user: @user)
+          item = Item.new(list: @list, user: @user)
           item.update_fields(item_attributes, %i[name description starred created_at updated_at due_date])
           checked = item[:starred].nil? ? 0 : 1
           item.starred = checked
           @items << item
         end
 
-        if @items.any? { |i| i.errors.any? } || @new_list.errors.any?
+        if @items.any? { |i| i.errors.any? } || @list.errors.any?
+          #binding.pry
           @items.each { |i|  @item_errors << i.errors.on(:name).join }
           raise Sequel::Rollback
         else
-          flash[:success] = "List '#{@new_list.name}' has been successfully created"
-          redirect "/lists/#{@new_list.id}"
+          flash[:success] = "List '#{@list.name}' has been successfully created"
+          redirect "/lists/#{@list.id}"
         end
       end
     end
-    slim :'lists/new_list'
+    slim :'lists/edit_list'
   end
 
   get '/lists/:list_id/?' do
@@ -68,14 +69,14 @@ class Todo < Sinatra::Application
 
   get '/lists/:list_id/edit' do
     # show the edit page
-    @edited_list = List.first(id: params[:list_id])
-    @items = @edited_list.items
+    @list = List.first(id: params[:list_id])
+    @items = @list.items
     @item_errors = []
     can_edit = true
-    if @edited_list.nil?
+    if @list.nil?
       can_edit = false
-    elsif @edited_list.shared_with == 'public'
-      permission = Permission.first(list: @edited_list, user: @user)
+    elsif @list.shared_with == 'public'
+      permission = Permission.first(list: @list, user: @user)
       can_edit = false if permission.nil? || permission.permission_level == 'read_only'
     end
     if can_edit
@@ -87,26 +88,27 @@ class Todo < Sinatra::Application
 
   post '/lists/:list_id/edit' do
     # update the list
-    @edited_list = List.first(id: params[:list_id])
+    @list = List.first(id: params[:list_id])
     @item_params = params[:items] || []
     @items = []
     @item_errors = []
     DB.transaction do
-      @edited_list.name = params[:name]
+      @list.name = params[:name]
       @item_params.each do |item_attributes|
-        item = @edited_list.items_dataset[id: item_attributes[:id]] || Item.new(list: @edited_list, user: @user)
+        item = @list.items_dataset[id: item_attributes[:id]] || Item.new(list: @list, user: @user)
         item.update_fields(item_attributes, %i[name description starred created_at updated_at due_date])
         checked = item[:starred].nil? ? 0 : 1
         item.starred = checked
         @items << item
       end
-      if @edited_list.save
-        if @items.any? { |i| i.errors.any? } || @edited_list.errors.any?
+      if @list.save
+        if @items.any? { |i| i.errors.any? } || @list.errors.any?
           @items.each { |i| @item_errors << i.errors.on(:name).join if i.errors.any? }
+          # binding.pry
           raise Sequel::Rollback
         else
-          flash[:success] = 'List has been successfully updated'
-          redirect "/lists/#{@edited_list.id}"
+          flash[:success] = "#{@list.name} has been successfully updated"
+          redirect "/lists/#{@list.id}"
         end
       end
     end

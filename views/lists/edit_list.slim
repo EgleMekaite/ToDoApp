@@ -2,52 +2,56 @@
     .has-below
     .panel.panel-primary
         .panel-heading
-            h3.panel-title style='margin-top: 6px;' Edit List
-            a.btn.btn-primary.back href='/lists/#{@edited_list[:id]}' type='button'
-                span Back to List
+            h3.panel-title style='margin-top: 6px;' = @list.new? ? 'Create List' : 'Edit List'
+            a.btn.btn-primary.back href=(@list.new? ? '/lists' : "/lists/#{@list.id}") type='button'
+                span = @list.new? ? 'Back to Lists' : 'Back to List'
                 i.glyphicon.glyphicon-chevron-right
         .panel-body
-            form.form-horizontal name:="list" method="post" action=url("/lists/#{@edited_list[:id]}/edit")
+            form.form-horizontal name="list" method="post" action=(@list.new? ? url("/lists/new") : url("/lists/#{@list[:id]}/edit"))
                 .form-group
                     label.control-label.col-md-2 for="name" List name
                     .col-md-6
-                        - list_name_errors = @edited_list.errors.on(:name) || []
+                        - list_name_errors = @list.errors.on(:name) || []
                         div class=(list_name_errors.any? ? 'has-error' : '')
-                            input.form-control type="text" name="name" value='#{@edited_list[:name]}'
+                            input.form-control type="text" name="name" value='#{@list[:name]}'
                             .help-block= list_name_errors.join(', ') if list_name_errors.any?
-                        div class=(@item_errors.empty? ? '' : 'has-error')
-                            .help-block = @item_errors.empty? ? '' : @item_errors[0]
                 hr
                 -@items.each do |item|
-                    .form-group.item-group
+                    - item_errors = item.errors.on(:name)
+                    .form-group.item-group class=(item.id.nil? ? "unsaved_item" : "" )
                         .col-md-2 style='display: none'
-                            textarea.form-control type='text' name='items[][id]' #{item[:id]} 
-                        .col-md-2
-                            input.form-control type="text" name="items[][name]" value='#{item[:name]}'
-                        .col-md-5
-                            textarea.form-control type="text" name="items[][description]" #{item[:description]}  
-                        .col-md-1
-                            - if item[:starred] == true
-                                input.priority type='checkbox' aria-label='...' name='items[][starred]' checked=true
-                                    i.glyphicon.glyphicon-star-empty Priority?
+                            textarea.form-control type='text' name='items[][id]' =(item.id.nil? ? '' : item.id)
+                        .col-md-2 style='margin-bottom: 1.25em;'
+                            div class=(item_errors.nil? ? '' : 'has-error')
+                                input.form-control type="text" name="items[][name]" value=(@list.new? ? '' : item.name)
+                                small.help-block = item_errors.nil? ? '' : item_errors.join
+                        .col-md-5 style='margin-bottom: 1.25em;'
+                            textarea.form-control type="text" name="items[][description]" =(@list.new? ? '' : item.description)
+                        .col-md-1.col-sm-3
+                            input.priority type='checkbox' aria-label='...' name='items[][starred]' checked=(item[:starred] == true ? true : false)
+                            small  Priority? 
+                            i.glyphicon.glyphicon-star-empty
+                        .col-md-3.col-sm-7
+                            label Due Date:
+                            input.form-control type='date' autocomplete='on' name='items[][due_date]' min='#{@min_date}' value=(@list.new? ? '' : item.due_date&.strftime("%Y-%m-%d"))
+                        .col-md-1.col-sm-2
+                            - if !item.id.nil?
+                                button.btn.btn-default.delete id="item-#{item.id}" data-listinfo='list-#{@list.id}' type='button'
+                                    i.glyphicon.glyphicon-remove style='color: red;'
                             - else
-                                input.priority type='checkbox' aria-label='...' name='items[][starred]' checked=false
-                                    i.glyphicon.glyphicon-star-empty Priority?
-                            end
-                        .col-md-3
-                            input.form-control type='date' autocomplete='on' name='items[][due_date]' min='#{@min_date}' value='#{item[:due_date]&.strftime("%Y-%m-%d")}'
-                        .col-md-1
-                            button.btn.btn-default.delete id="item-#{item[:id]}" data-listinfo='list-#{@edited_list.id}' type='button'
-                                i.glyphicon.glyphicon-remove
-                end
-                    #items_list.form-group
-                        a href='javascript:void(0)' id='add-item' class='col-md-3' Add Item
+                                button.btn.btn-default.unsaved type='button'
+                                    i.glyphicon.glyphicon-remove style='color: red;'
+                    hr class=(item.id.nil? ? 'unsaved_item' : '')    
+                
+                
+                #items_list.form-group
+                    a href='javascript:void(0)' id='add-item' class='col-md-3' Add Item
                 hr
                 .form-group
                     .col-md-2.col-md-offset-3
                         button.btn.btn-sm.btn-primary type="submit"
                             i.glyphicon.glyphicon-ok 
-                            span   Submit changes
+                            span = @list.new? ? ' Create ' : ' Submit changes '
   
 script type="text/template" id='item_template'
     == slim :'lists/_item_template'

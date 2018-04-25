@@ -20,14 +20,6 @@ class List < Sequel::Model
     validates_presence :name, message: 'Name cannot be blank'
   end
 
-  def add_comment(list, user, comments)
-    comments.each do |comment|
-      comm = Comment.new(user_id: user.id, list_id: list.id, text: comment[:text])
-      comm.save if comm.valid?
-    end
-    list.save
-  end
-
   def delete_list(list_id, items)
     list = List.first(id: list_id)
     permissions = list.permissions

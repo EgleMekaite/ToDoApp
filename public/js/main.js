@@ -10,6 +10,7 @@ $(document).ready(function(){
         var template_text = $('#item_template').html();
         $('#items_list').before(template_text);
         $('.template').removeClass('template').attr('id', 'new-' + id_num);
+        $('.template_hr').removeClass('template_hr').attr('id', 'hr-' + id_num);
         $('.delete-unsaved').removeClass('delete-unsaved').attr('data-identifyer', 'delete_unsaved-' + id_num);
         id_num++;
     });
@@ -30,9 +31,14 @@ $(document).ready(function(){
         }
     });
 
+    $('.unsaved').on('click', function(){
+        $('.unsaved_item').remove();
+    });
+
     $(document).on('click', '[data-identifyer]', function(){
         var button_id = $(this).attr('data-identifyer').split('-')[1];
         $('#new-'+ button_id).remove();
+        $('#hr-' + button_id).remove();
     });
 
     if ($('ul.lists > li').length == 0){
