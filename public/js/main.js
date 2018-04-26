@@ -44,5 +44,8 @@ $(document).ready(function(){
     if ($('ul.lists > li').length == 0){
         $('ul.lists').append('<li class="list-group-item">You have no lists</li>');
     }
+    
+    $('#flash').addClass("alert alert-dismissible show").attr('role', 'alert');
+    $('.flash').append('<button type="button" class="close close-button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
 
 });

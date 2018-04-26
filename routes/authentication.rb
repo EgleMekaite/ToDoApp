@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'pry'
-
 class Todo < Sinatra::Application
   get '/login/?' do
     # show a login page

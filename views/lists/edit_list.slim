@@ -3,6 +3,7 @@
     .panel.panel-primary
         .panel-heading
             h3.panel-title style='margin-top: 6px;' = @list.new? ? 'Create List' : 'Edit List'
+            /- binding.pry
             a.btn.btn-primary.back href=(@list.new? ? '/lists' : "/lists/#{@list.id}") type='button'
                 span = @list.new? ? 'Back to Lists' : 'Back to List'
                 i.glyphicon.glyphicon-chevron-right

@@ -42,8 +42,8 @@ html
           .has-below
 
         .row
-            .col-md-6.col-md-offset-3
-              == styled_flash
+          .col-md-6.col-md-offset-3
+            == styled_flash
         .row
           == yield
 
@@ -52,9 +52,26 @@ css:
     padding-bottom: 20px;
   }
   .success {
-    background-color: #16bf16;
-    color: white;
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
     text-align: center;
     padding: 6px;
     border-radius: 0.25em;
+  }
+  .warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+    text-align: center;
+    padding: 6px;
+    border-radius: 0.25em;
+  }
+  #flash {
+    padding: 0;
+    margin-bottom: 0;
+    border: none;
+  }
+  .close-button {
+    right: 0 !important;
   }

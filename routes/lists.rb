@@ -31,10 +31,13 @@ class Todo < Sinatra::Application
           @items << item
         end
 
-        if @items.any? { |i| i.errors.any? } || @list.errors.any?
-          #binding.pry
-          @items.each { |i|  @item_errors << i.errors.on(:name).join }
+        if @items.any? { |i| i.errors.any? } && @list.errors.any?
+          @items.each { |i| @item_errors << i.errors.on(:name).join }
           raise Sequel::Rollback
+        elsif @list.errors.none? && @items.any? { |i| i.errors.any? }
+          @items.each { |i| @item_errors << i.errors.on(:name).join }
+          flash[:warning] = "List '#{@list.name}' has been successfully created but your items could not be saved"
+          redirect "/lists/#{@list.id}/edit"
         else
           flash[:success] = "List '#{@list.name}' has been successfully created"
           redirect "/lists/#{@list.id}"
@@ -46,7 +49,7 @@ class Todo < Sinatra::Application
 
   get '/lists/:list_id/?' do
     list = List.first(id: params[:list_id])
-    list_items = list.items_dataset.order(Sequel.desc(:starred))
+    list_items = list.items.nil? ? [] : list.items_dataset.order(Sequel.desc(:starred))
     @comments = list.comments
     @new_comment = Comment.new
     slim :'lists/list', locals: { list_items: list_items, list: list }
@@ -107,7 +110,7 @@ class Todo < Sinatra::Application
           # binding.pry
           raise Sequel::Rollback
         else
-          flash[:success] = "#{@list.name} has been successfully updated"
+          flash[:success] = "'#{@list.name}' has been successfully updated"
           redirect "/lists/#{@list.id}"
         end
       end
@@ -117,6 +120,7 @@ class Todo < Sinatra::Application
 
   get '/lists/:list_id/delete' do
     list = List.first(id: params[:list_id])
+    flash[:success] = "'#{list[:name]}' has been deleted"
     list.delete_list list.id, list.items
     redirect '/lists'
   end
