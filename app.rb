@@ -8,7 +8,7 @@ require_relative 'routes/lists'
 require 'yaml'
 
 class Todo < Sinatra::Application
-  set :environment, :development
+  set :environment, (ENV['RACK_ENV'] || :development)
   register Sinatra::Flash
   configure do
     also_reload 'routes/*.rb'
@@ -17,8 +17,8 @@ class Todo < Sinatra::Application
       puts "reloaded at #{Time.now}"
     end
   end
-  env = ENV['RACK_ENV'] || 'development'
-  DB = Sequel.connect(YAML.safe_load(File.open('database.yml'))[env])
+  # env = ENV['RACK_ENV'] || 'development'
+  DB = Sequel.connect(YAML.safe_load(File.open('database.yml'))[environment])
 
   enable :sessions
   # Do not throw exception if model cannot be saved. Just return nil
