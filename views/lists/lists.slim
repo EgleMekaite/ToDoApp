@@ -1,11 +1,12 @@
-.col-md-8.col-md-offset-2
-    .has-below 
-    h3 Your Lists
+.has-below
+.col-12.col-md-8.justify-content-md-center.mx-auto 
+    .has-below
+    h4 Your Lists
     .has-below
     ul.list-group.lists
         - @lists.each do |list|
             li.list-group-item
-                h5
-                  a href="lists/#{list.id}"
+                h6
+                  a.text-secondary href="lists/#{list.id}"
                     = list.name
         end

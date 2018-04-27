@@ -18,7 +18,7 @@ $(document).ready(function(){
     $('[data-name]').each(function(){
         if ($(this).attr('data-name') == 'true') {
         item_id_num = $(this).attr('id').split('-')[1];
-        $('#item-' + item_id_num + ' > i').addClass('glyphicon-star');
+        $('#item-' + item_id_num + ' > span').addClass('oi oi-star');
         $('#row-' + item_id_num).addClass('starred');
         } 
     });

@@ -1,16 +1,16 @@
-.col-md-10.col-md-offset-1
-    .has-below
-    .panel.panel-primary
-        .panel-heading
-            h3.panel-title style='margin-top: 6px;' = @list.new? ? 'Create List' : 'Edit List'
+.col-md-12.justify-content-md-center.mx-auto
+    .card.align-middle.mt-3
+        .card-header.bg-info
+            h4.card-title style='margin-top: 6px;' = @list.new? ? 'Create List' : 'Edit List'
             /- binding.pry
-            a.btn.btn-primary.back href=(@list.new? ? '/lists' : "/lists/#{@list.id}") type='button'
-                span = @list.new? ? 'Back to Lists' : 'Back to List'
-                i.glyphicon.glyphicon-chevron-right
-        .panel-body
+            a href=(@list.new? ? '/lists' : "/lists/#{@list.id}")
+                button.btn.btn-outline-dark type='button'
+                    span = @list.new? ? 'Back to Lists ' : 'Back to List '
+                    span.oi.oi-arrow-circle-right
+        .card-body
             form.form-horizontal name="list" method="post" action=(@list.new? ? url("/lists/new") : url("/lists/#{@list[:id]}/edit"))
-                .form-group
-                    label.control-label.col-md-2 for="name" List name
+                .form-group.d-md-flex
+                    label.control-label.col-md-2.col-4.mb-0 for="name" List name
                     .col-md-6
                         - list_name_errors = @list.errors.on(:name) || []
                         div class=(list_name_errors.any? ? 'has-error' : '')
@@ -19,46 +19,47 @@
                 hr
                 -@items.each do |item|
                     - item_errors = item.errors.on(:name)
-                    .form-group.item-group class=(item.id.nil? ? "unsaved_item" : "" )
-                        .col-md-2 style='display: none'
-                            textarea.form-control type='text' name='items[][id]' =(item.id.nil? ? '' : item.id)
-                        .col-md-2 style='margin-bottom: 1.25em;'
-                            div class=(item_errors.nil? ? '' : 'has-error')
-                                input.form-control type="text" name="items[][name]" value=(@list.new? ? '' : item.name)
-                                small.help-block = item_errors.nil? ? '' : item_errors.join
-                        .col-md-5 style='margin-bottom: 1.25em;'
-                            textarea.form-control type="text" name="items[][description]" =(@list.new? ? '' : item.description)
-                        .col-md-1.col-sm-3
-                            input.priority type='checkbox' aria-label='...' name='items[][starred]' checked=(item[:starred] == true ? true : false)
-                            small  Priority? 
-                            i.glyphicon.glyphicon-star-empty
-                        .col-md-3.col-sm-7
-                            label Due Date:
-                            input.form-control type='date' autocomplete='on' name='items[][due_date]' min='#{@min_date}' value=(@list.new? ? '' : item.due_date&.strftime("%Y-%m-%d"))
-                        .col-md-1.col-sm-2
-                            - if !item.id.nil?
-                                button.btn.btn-default.delete id="item-#{item.id}" data-listinfo='list-#{@list.id}' type='button'
-                                    i.glyphicon.glyphicon-remove style='color: red;'
-                            - else
-                                button.btn.btn-default.unsaved type='button'
-                                    i.glyphicon.glyphicon-remove style='color: red;'
+                    .form-group.item-group.d-md-flex.d-block class=(item.id.nil? ? "unsaved_item" : "" )
+                        .form-group.d-lg-flex.d-md-inline-flex.d-block    
+                            .col-lg-2 style='display: none'
+                                textarea.form-control type='text' name='items[][id]' =(item.id.nil? ? '' : item.id)
+                            .col-lg-4.col-md-4.col-12 style='margin-bottom: 1.25em;'
+                                div class=(item_errors.nil? ? '' : 'has-error')
+                                    input.form-control type="text" name="items[][name]" value=(@list.new? ? '' : item.name)
+                                    small.help-block= item_errors.nil? ? '' : item_errors.join
+                            .col-lg-8.col-md-8.col-12 style='margin-bottom: 1.25em;'
+                                textarea.form-control type="text" name="items[][description]" =(@list.new? ? '' : item.description)
+                        .form-group.d-lg-flex.d-md-inline-flex.d-flex
+                            .col-lg-3.col-md-4.col-4
+                                input.priority type='checkbox' aria-label='...' name='items[][starred]' checked=(item[:starred] == true ? true : false)
+                                small  Priority? 
+                                span.oi.oi-star
+                            .col-lg-7.col-md-6.col-6
+                                label Due Date:
+                                input.form-control type='date' autocomplete='on' name='items[][due_date]' min='#{@min_date}' value=(@list.new? ? '' : item.due_date&.strftime("%Y-%m-%d"))
+                            .col-lg-2.col-md-2.col-2
+                                - if !item.id.nil?
+                                    button.btn.btn-light.delete id="item-#{item.id}" data-listinfo='list-#{@list.id}' type='button'
+                                        span.oi.oi-delete style='color: darkred;'
+                                - else
+                                    button.btn.btn-light.unsaved type='button'
+                                        span.oi.oi-delete style='color: darkred;'
                     hr class=(item.id.nil? ? 'unsaved_item' : '')    
                 
                 
                 #items_list.form-group
-                    a href='javascript:void(0)' id='add-item' class='col-md-3' Add Item
+                    a.text-info href='javascript:void(0)' id='add-item' class='col-md-3' Add Item
                 hr
-                .form-group
-                    .col-md-2.col-md-offset-3
-                        button.btn.btn-sm.btn-primary type="submit"
-                            i.glyphicon.glyphicon-ok 
-                            span = @list.new? ? ' Create ' : ' Submit changes '
+                .form-group.text-center
+                    button.btn.btn-sm.btn-info type="submit"
+                        span.oi.oi-check
+                        span = @list.new? ? ' Create ' : ' Submit changes '
   
 script type="text/template" id='item_template'
     == slim :'lists/_item_template'
   
 css:
-    .panel-heading{
+    .card-header {
         display: flex;
         justify-content: space-between;
     }

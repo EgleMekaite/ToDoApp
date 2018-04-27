@@ -2,52 +2,50 @@ doctype html
 html
   head
     title ToDo
-    script src="/js/jquery-3.3.1.min.js"
-    script src="/js/bootstrap.min.js"
+    script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"
+    script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"
+    script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"
     script src='/js/main.js'
-    link rel="stylesheet" href="/css/bootstrap.min.css"
-    link rel="stylesheet" href="/css/bootstrap-theme.min.css"
-
+    link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous"
+    link href="/css/open-iconic-master/font/css/open-iconic-bootstrap.css" rel="stylesheet"
+    
+  header.navbar.navbar-expand-sm.fixed-top.navbar-dark.bg-dark role='navigation'
+    a.navbar-brand href=url('/lists')
+      span.oi.oi-home
+    - if current_user
+      ul.navbar-nav.mr-auto id='welcome_message'
+          li.nav-item
+            span.nav-link Logged In: #{@user.name}
+      button.navbar-toggler type='button' data-toggle='collapse' data-target="#navbar-content" aria-controls="navbar-content" aria-expanded="false" aria-label="Toggle navigation"
+        span.navbar-toggler-icon
+      
+      .collapse.navbar-collapse id='navbar-content'
+        ul.navbar-nav.mr-auto
+          li.nav-item id='create_new'
+            a.nav-link href='/lists/new'
+              span.oi.oi-plus
+              span  Create a New List
+        a href='/logout' 
+          button.btn.btn-outline-info.my-2.my-sm-0 type='button' id='logout'
+            span  Log Out 
+            span.oi.oi-account-logout
+  
+  .has-below
+  .has-below
+  .has-below
   body
-    .container
-      .col-md-12
+      .container
         .row
-          nav.navbar.navbar-inverse.navbar-fixed-top role='navigation'
-            .navbar-inner
-              .container-fluid
-                .navbar-header
-                  button.navbar-toggle data-toggle='collapse'
-                    span.icon-bar
-                    span.icon-bar
-                    span.icon-bar
-                  a.navbar-brand href=url('/lists')
-                    i.glyphicon.glyphicon-home
-                - if current_user
-                  .collapse.navbar-collapse 
-                    ul.nav.navbar-nav.navbar-left id='welcome_message'
-                      li.nav-item
-                        a
-                          span Logged In: #{@user.name}
-                    ul.nav.navbar-nav.navbar-left id='create_new'
-                      li 
-                        a href='/lists/new'
-                          i.glyphicon.glyphicon-plus-sign
-                          span  Create a New List
-                    a.btn.btn-default.navbar-btn.navbar-right href='/logout' type='button' id='logout' style='margin-right: 10px;'
-                        i.glyphicon.glyphicon-log-out
-                        span  Log Out
-
-          .has-below
-          .has-below
-          .has-below
-
-        .row
-          .col-md-6.col-md-offset-3
+          .col-12.col-md-6.justify-content-md-center.mx-auto 
+            .has-below
             == styled_flash
         .row
           == yield
 
 css:
+  header, body, input, textarea {
+    font-size: 14px !important;
+  }
   .has-below {
     padding-bottom: 20px;
   }
@@ -74,4 +72,8 @@ css:
   }
   .close-button {
     right: 0 !important;
+    padding: 0 !important;
+  }
+  .has-error {
+    color: darkred;
   }

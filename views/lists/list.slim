@@ -1,17 +1,18 @@
-.col-md-10.col-md-offset-1
+.col-12.justify-content-md-center.mx-auto  
     .has-below
-    .panel.panel-primary
-        .panel-heading
-            h2.panel-title= list.name
-        .panel-body
-            #action-buttons
-                .btn-group.navbar-nav.navbar-left role='group' aria-label='...'
-                    a.btn.btn-default type='button' href='/lists/#{list.id}/edit' Edit list
-                    a.btn.btn-default type='button' href='/lists/#{list.id}/delete' onclick = 'return confirm("Are you sure you want to delete this list?");' Delete list
-                    button.btn.btn-default type='button'data-toggle='collapse' data-target='#collapse-#{list.id}' Add Comment
-                a.btn.btn-primary.navbar-righ href='/lists' type='button'
-                    span Back to Lists
-                    i.glyphicon.glyphicon-chevron-right
+    .card
+        .card-header.bg-info
+            h4.card-title= list.name
+            a href='/lists'
+                button.btn.btn-outline-dark.navbar-righ type='button'
+                    span Back to Lists  
+                    span.oi.oi-arrow-circle-right
+        .card-body
+            #action-buttons.navbar role='navigation'
+                .btn-group.btn-group-sm.d-block role='group' aria-label='button_group'
+                    a.btn.btn-light href='/lists/#{list.id}/edit' Edit list
+                    a.btn.btn-light href='/lists/#{list.id}/delete' onclick = 'return confirm("Are you sure you want to delete this list?");' Delete list
+                    button.btn.btn-light type='button'data-toggle='collapse' data-target='#collapse-#{list.id}' Add Comment
             .has-below
             - comment_errors = @new_comment.errors.on(:text) || []
             .has-error
@@ -22,25 +23,25 @@
                         .col-md-10.input-group
                             input.form-control type='text' name="[text"
                             span.input-group-btn
-                                button.btn.btn-default type='submit' Submit
+                                button.btn.btn-light type='submit' Submit
                 
                          
             .has-below
-            table.table
+            table.table.table-responsive-md
                 thead
                     tr
-                        th.col-md-2 Item name
-                        th.col-md-6 Item description
-                        th.col-md-2 Priority
-                        th.col-md-2 Due Date
+                        th scope='col' Item name
+                        th scope='col' Item description
+                        th scope='col' Priority
+                        th scope='col' Due Date
                 tbody
                     -list_items.each do |item|
                         tr id='row-#{item[:id]}'
-                            td.col-md-2 #{item[:name]}
-                            td.col-md-6 #{item[:description]}
-                            td.col-md-2 data-name='#{item[:starred]}' id='item-#{item[:id]}'
-                                i.glyphicon
-                            td.col-md-2 #{item.due_date&.strftime("%Y-%m-%d")}
+                            td scope='row' #{item[:name]}
+                            td #{item[:description]}
+                            td data-name='#{item[:starred]}' id='item-#{item[:id]}'
+                                span
+                            td #{item.due_date&.strftime("%Y-%m-%d")}
                     end
             .has-below
             
@@ -53,15 +54,11 @@
                         span #{comment[:text]}
                         - if Time.now < comment.creation_time + 900
                             a.btn.btn-default.delete-comment id='delete_comment_btn-#{comment[:id]}' type='button' href='/lists/#{list.id}/comments/#{comment[:id]}/delete'
-                                i.glyphicon.glyphicon-remove
+                                span.oi.oi-delete style='color: darkred;'
     
 css:
     .starred {
-        background-color: #F0F8FF;
-    }
-    #action-buttons {
-        display: flex;
-        justify-content: space-between;
+        background-color: #e6f3f5;
     }
     .comments > li {
         display: flex;
@@ -70,6 +67,10 @@ css:
     .comments > li > span {
         font-style: italic;
         color: darkred;
+    }
+    .card-header {
+        display: flex;
+        justify-content: space-between;
     }
 
 javascript:

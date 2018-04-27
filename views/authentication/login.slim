@@ -1,27 +1,20 @@
-.col-md-6.col-md-offset-3
-    .has-below
-    .panel.panel-primary
-        .panel-heading
-            h3.panel-title Login
-        .panel-body
+.has-below
+.col-12.col-md-6.justify-content-md-center.mx-auto    
+    .card.align-middle.mt-3
+        .card-header.bg-info
+            h4.card-title Login
+        .card-body
             form.form-horizontal name="login" method="post" action=url("/login")
                 .form-group
-                    label.control-label.col-md-3 for="name" Username
-                    .col-md-8
-                        input.form-control type="text" name="name"
+                    label.control-label for="name" Username
+                    input.form-control type="text" name="name"
                 .form-group
-                    label.control-label.col-md-3 for="password" Password
-                    .col-md-8
-                        input.form-control type="password" name="password"
-                        .help-block=(@new_user.nil? ? 'Invalid username or password' : '')  
-                .form-group
-                    .col-md-2.col-md-offset-3
-                        button.btn.btn-sm.btn-primary type="submit"
-                            i.glyphicon.glyphicon-ok 
-                            span  Submit
-    a href='/signup' Not a User yet? Sign up here!
-
-css: 
-    .help-block {
-        color: red;
-    }
+                    label.control-label for="password" Password
+                    input.form-control type="password" name="password"
+                    .help-block.has-error=(@new_user.nil? ? 'Invalid username or password' : '')  
+                .form-group.text-center
+                    button.btn.btn-sm.btn-info type="submit"
+                        span.oi.oi-account-login
+                        span  Go
+        a.text-center href='/signup' Not a User yet? Sign up here!
+        .has-below

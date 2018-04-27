@@ -1,17 +1,19 @@
 
-.form-group.item-group.template
-    .col-md-2 style='margin-bottom: 1.25em;'
-        input.form-control type="text" name="items[][name]" placeholder="Item name"
-    .col-md-5 style='margin-bottom: 1.25em;'
-        textarea.form-control type="text" name="items[][description]" placeholder="Item description"
-    .col-md-1.col-sm-3
-        input.priority type='checkbox' aria-label='...' name='items[][starred]' 
-        small  Priority? 
-        i.glyphicon.glyphicon-star-empty 
-    .col-md-3.col-sm-7
-        label Due Date:
-        input.form-control type='date' autocomplete='on' name='items[][due_date]' min='#{@min_date}' value='items[][due_date]'
-    .col-md-1.col-sm-2
-        button.btn.btn-default.delete-unsaved type='button'
-            i.glyphicon.glyphicon-remove style='color: red;' 
+.form-group.item-group.template.-md-flex.d-block
+    .form-group.d-lg-flex.d-md-inline-flex.d-block 
+        .col-lg-4 style='margin-bottom: 1.25em;'
+            input.form-control type="text" name="items[][name]" placeholder="Item name"
+        .col-lg-8.col-md-4.col-12 style='margin-bottom: 1.25em;'
+            textarea.form-control type="text" name="items[][description]" placeholder="Item description"
+    .form-group.d-lg-flex.d-md-inline-flex.d-flex
+        .col-lg-3.col-md-4.col-4
+            input.priority type='checkbox' aria-label='...' name='items[][starred]' 
+            small  Priority? 
+            span.oi.oi-star
+        .col-lg-7.col-md-6.col-6
+            label Due Date:
+            input.form-control type='date' autocomplete='on' name='items[][due_date]' min='#{@min_date}' value='items[][due_date]'
+        .col-lg-2.col-md-2.col-2
+            button.btn.btn-light.delete-unsaved type='button'
+                span.oi.oi-delete style='color: darkred;'
 hr class='template_hr'
